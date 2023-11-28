@@ -1,0 +1,11 @@
+largura = 40
+print("/"+"".center(largura, "-")+"\\")
+print("|"+"0 - Criar Tabela".center(largura, " ")+"|")
+print("|"+"1 - Listar Tabelas".center(largura, " ")+"|")
+print("|"+"2 - Inserir Registro".center(largura, " ")+"|")
+print("|"+"3 - Exibir Tabela".center(largura, " ")+"|")
+print("|"+"4 - Pesquisar".center(largura, " ")+"|")
+print("|"+"5 - Excluir Registro".center(largura, " ")+"|")
+print("|"+"6 - Excluir Tabela".center(largura, " ")+"|")
+print("|"+"7 - Sair do DBSM".center(largura, " ")+"|")
+print("\\"+"".center(largura, "-")+"/")
