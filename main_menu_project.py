@@ -1,11 +1,17 @@
 largura = 40
+offset = 12
+
+cmd_list = [
+    "0 - Criar Tabela",
+    "1 - Listar Tabelas",
+    "2 - Inserir Registro",
+    "3 - Exibir Tabela",
+    "4 - Pesquisar",
+    "5 - Excluir Registro",
+    "6 - Excluir Tabela",
+    "7 - Sair do DBSM"
+]
 print("/"+"".center(largura, "-")+"\\")
-print("|"+"0 - Criar Tabela".center(largura, " ")+"|")
-print("|"+"1 - Listar Tabelas".center(largura, " ")+"|")
-print("|"+"2 - Inserir Registro".center(largura, " ")+"|")
-print("|"+"3 - Exibir Tabela".center(largura, " ")+"|")
-print("|"+"4 - Pesquisar".center(largura, " ")+"|")
-print("|"+"5 - Excluir Registro".center(largura, " ")+"|")
-print("|"+"6 - Excluir Tabela".center(largura, " ")+"|")
-print("|"+"7 - Sair do DBSM".center(largura, " ")+"|")
+for cmd in cmd_list:
+        print("|"+offset*" "+cmd+(largura-(len(cmd)+offset))*" "+"|")
 print("\\"+"".center(largura, "-")+"/")
