@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "headers/tables_func.h"
+
 void print_main_menu()//exibe o menu principal do programa
 {
     printf("/----------------------------------------\\\n");
@@ -44,7 +46,7 @@ int main()
         switch (cmd)
         {
             case 0://cria tabela
-                /* code */
+                criar_tabela();
                 break;
             
             case 1://listar tabelas
