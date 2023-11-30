@@ -9,10 +9,10 @@ char sep[SEP_LEN+1] = "|#@!\0";//separador dos atributos das tabelas
 
 int criar_tabela()
 {
-    char nome_tb[MAX_NAME_LENGTH + 1] = {0};//nome da tabela
-    char nome_at[MAX_NAME_LENGTH + 1] = {0};//nome do atributo
+    char *nome_tb;//nome da tabela
+    char *nome_at;//nome do atributo
     char input_nome_tipo_at[MAX_NAME_LENGTH+10] = {0};//variável auxiliar de entrada do nome + tipo do atributo
-    char tipo_at[6] = {0};//string que definirá o tipo do atributo
+    char *tipo_at;//string que definirá o tipo do atributo
     int tb_ok = 0, at_ok = 0;//var auxiliares de erros
 
     while (!tb_ok)

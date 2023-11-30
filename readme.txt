@@ -2,5 +2,10 @@
 
 
 Autores:
-EMILLY VITORIA RODRIGUES GOMES FELIX
-JOÃO ARTUR MEIRA LUIZ DA COSTA
+    EMILLY VITORIA RODRIGUES GOMES FELIX
+    JOÃO ARTUR MEIRA LUIZ DA COSTA
+
+Contribuições:
+    João Artur:
+        Menu Inicial;
+        função inserir tabela (tanto a parte em tables_func.c quanto em io_files.c);
