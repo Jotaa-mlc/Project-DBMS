@@ -1,0 +1,11 @@
+Oii Emilly
+Bem... isso aqui é mais pra caso a gnt tenha alguma dúvida sobre como fazer algumas coisas e pra deixar alguns parões organizados
+
+Eu gostaria de padronizar o retorno das funções (claro que não aquelas que devem retornar algum outro valor) com:
+    (baseado na função try_again())
+    return 0;
+        quando o usuário cancelou a operação
+    return 1;
+        não vamos ver esse retorno pras funções chamadas na main(). Ele será usado pra quando o usuário errou alguma coisa e quer refazer a operação
+    return 2;
+        quando as funções conseguirem executar tudo normalmente
