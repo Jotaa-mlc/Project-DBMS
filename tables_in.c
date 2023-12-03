@@ -5,6 +5,92 @@
 #include "headers/definitions.h"
 #include "headers/io_files.h"
 
+char sep[] = "|#@!";//separador dos atributos das tabelas
+
+int try_again()
+{
+    int resposta = 2;
+
+    printf("Deseja tentar denovo? (1)\nDeseja cancelar a operação? (0)");
+    scanf("%i", &resposta);
+
+    return resposta;
+}
+/**
+ * Confere se o nome está válido, i.e.
+ * Não contém o [sep]
+ * 
+ * @return 2: sucesso; 1: repetir processo; 0: cancelar operação;
+*/
+int checar_nome(char *nome)
+{
+    int nome_size = strlen(nome);
+    if(nome_size<1)
+    {
+        printf("Por favor, insira um nome.\n");
+        return try_again();
+    }
+    else
+    {
+        if(strstr(nome, sep) != NULL)
+        {
+            printf("A sequência de caracteres '%s' não pode ser usada por ser reservada pelo programa.\n", sep);
+            return try_again(); 
+        }
+    }
+
+    return 2;//não ocorreram erros ao declarar o nome
+}
+/**
+ * confere a entrada do tipo do atributo
+ * 
+ * @return 0 || 1: try_again(); 2: int, 3: float, 4: double, 5: char, 6: string
+*/
+int checar_tipo(char *tipo)
+{
+    /**
+    * Lista com os possíveis tipos para os parâmetros
+    * 
+    * @return srt com o nome do tipo [int, float, double, char, string]
+    */
+    char tipos_list[5][8] = {
+        "int",//0
+        "float",//1
+        "double",//2
+        "char",//3
+        "string"//4
+    };
+
+    for(int tipo_int = 0; tipo_int < 5; tipo_int++)
+    {
+        if(strcmp(tipo, tipos_list[tipo_int]) == 0) return tipo_int+2;
+    }
+
+    printf("Tipo de variável não reconhecido.\n");
+    return try_again();
+}
+
+Tabela new_tabela(char *nome_tb, char *nome_at, int tipo_at)
+{
+    Tabela tb;
+    tb.nome_tb = calloc(strlen(nome_tb), sizeof(char));
+    strcpy(tb.nome_tb, nome_tb);
+
+    tb.nomes_at = malloc(sizeof(char*));
+    tb.nomes_at[0] = calloc(strlen(nome_at), sizeof(char));
+    strcpy(tb.nomes_at[0], nome_at);
+
+    tb.tipos_at = calloc(1, sizeof(int));
+    tb.tipos_at[0] = tipo_at;
+
+    tb.qte_at = 1;
+    tb.qte_reg = 0;
+    
+    tb.registros = NULL;
+
+    return tb;
+}
+
 /**
  * Cria a tabela conforme as entradas do usuário
  * 
@@ -12,7 +98,7 @@
 */
 int criar_tabela()
 {
-    char *nome_tb;//nome da tabela
+    char nome_tb[MAX_NAME_LENGTH+8] = {0};//nome da tabela
     char *nome_at;//nome do atributo
     char *tipo_at;//tipo do atributo
     char input_nome_tipo_at[MAX_NAME_LENGTH+10] = {0};//variável auxiliar de entrada do nome + tipo do atributo
@@ -32,7 +118,7 @@ int criar_tabela()
         //não é um elif por conta da alteração de nome_ok caso a tabela já exista
         if (nome_ok == 1)
         {
-            free(nome_tb);
+            memset(nome_tb, '\0', MAX_NAME_LENGTH+8);
         }
         //não é um elif por conta da alteração de nome_ok caso a tabela já exista
         if (nome_ok == 0)
@@ -78,76 +164,4 @@ int criar_tabela()
     }
 
     return 2;//sem erros durante a operação
-}
-
-/**
- * Confere se o nome está válido, i.e.
- * Não contém o [sep]
- * 
- * @return 2: sucesso; 1: repetir processo; 0: cancelar operação;
-*/
-int checar_nome(char *nome)
-{
-    int nome_size = strlen(nome);
-    if(nome_size<1)
-    {
-        printf("Por favor, insira um nome.\n");
-        return try_again();
-    }
-    else
-    {
-        if(strstr(nome, sep) != NULL)
-        {
-            printf("A sequência de caracteres '%s' não pode ser usada por ser reservada pelo programa.\n", sep);
-            return try_again(); 
-        }
-    }
-
-    return 2;//não ocorreram erros ao declarar o nome
-}
-/**
- * confere a entrada do tipo do atributo
- * 
- * @return 0 || 1: try_again(); 2: int, 3: float, 4: double, 5: char, 6: string
-*/
-int checar_tipo(char *tipo)
-{
-    for(int tipo_int = 0; tipo_int < 5; tipo_int++)
-    {
-        if(strcmp(tipo, tipos_list[tipo_int]) == 0) return tipo_int+2;
-    }
-
-    printf("Tipo de variável não reconhecido.\n");
-    return try_again();
-}
-
-int try_again()
-{
-    int resposta = 2;
-
-    printf("Deseja tentar denovo? (1)\nDeseja cancelar a operação? (0)");
-    scanf("%c", &resposta);
-
-    return resposta;
-}
-
-Tabela new_tabela(char *nome_tb, char *nome_at, int tipo_at)
-{
-    Tabela tb;
-    tb.nome_tb = calloc(len(nome_tb), sizeof(char));
-    strcpy(tb.nome_tb, nome_tb);
-
-    tb.nomes_at = malloc(sizeof(char*));
-    tb.nomes_at[0] = calloc(len(nome_at), sizeof(char));
-    strcpy(tb.nomes_at[0], nome_at);
-
-    tb.tipos_at = calloc(1, sizeof(int));
-    tb.tipos_at[0] = tipo_at;
-
-    tb.qte_at = 1;
-    tb.qte_reg = 0;
-    
-    tb.registros = NULL;
-
-    return tb;
 }

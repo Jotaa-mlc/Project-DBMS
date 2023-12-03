@@ -5,6 +5,7 @@
 #include "headers/definitions.h"
 #include "headers/tables_func.h"
 
+extern char sep[];
 char tables_config[] = "tables/tables.config";
 
 /**
@@ -27,9 +28,8 @@ int existe_tabela(char *nome_tb)
         char nome_tb_lida[MAX_NAME_LENGTH] = {0};
         char str_formatada[] = "%%s";
         strcat(str_formatada, sep);
-        while (tb_config != EOF)
+        while (fscanf(tb_config, str_formatada, nome_tb_lida) != EOF)
         {
-            fscanf(tb_config, str_formatada, nome_tb_lida);
             if (strcmp(nome_tb, nome_tb_lida) == 0)
             {
                 printf("A tabela já existe!\n");
@@ -39,6 +39,39 @@ int existe_tabela(char *nome_tb)
 
         return 2;   
     }
+}
+
+int update_tables_config(Tabela tb)
+{
+    FILE * tb_config;
+    tb_config = fopen(tables_config, "r+");
+
+    if (tb_config == NULL)
+    {
+        printf("ERRO: não foi possível abrir um arquivo essencial para o programa\nCaminho para o arquivo: tables/tables.config\n");
+        printf("ERRO: %s\n", strerror(errno));
+        return -1;
+    }
+    else
+    {
+        char nome_tb_lida[MAX_NAME_LENGTH] = {0};
+        char str_formatada[] = "%%s";
+        strcat(str_formatada, sep);
+
+        while (fscanf(tb_config, str_formatada, nome_tb_lida) != EOF)
+        {
+            if (strcmp(tb.nome_tb, nome_tb_lida) == 0)
+            {
+                fprintf(tb_config, "%s%s%i%s%i%s\n", tb.nome_tb, sep, tb.qte_at, sep, tb.qte_reg, sep);
+                fclose(tb_config);
+                return 2;
+            }
+        }
+    }
+    
+    fprintf(tb_config, "%s%s%i%s%i%s\n", tb.nome_tb, sep, tb.qte_at, sep, tb.qte_reg, sep);
+    fclose(tb_config);
+    return 2;
 }
 
 /**
@@ -59,33 +92,33 @@ int arquivar_tabela(Tabela tb)
     {
         fprintf(tb_file,"id%s", sep);
 
-        for (int i = 0; i < tb.qte_at; i++)//insere os atributos no cabeçalho do arquivo
+        for (unsigned int i = 0; i < tb.qte_at; i++)//insere os atributos no cabeçalho do arquivo
         {
             fprintf(tb_file,"%s%s", tb.nomes_at[i], sep);
         }
         fprintf(tb_file,"\n");
         
-        for (int i = 0; i < tb.qte_reg; i++)//insere os registros
+        for (unsigned int i = 0; i < tb.qte_reg; i++)//insere os registros
         {
             fprintf(tb_file,"%u%s", tb.registros[i].id, sep);
-            for (int i = 0; i < tb.qte_at; i++)
+            for (unsigned int j = 0; j < tb.qte_at; j++)
             {
-                switch (tb.tipos_at[i])
+                switch (tb.tipos_at[j])
                 {
                     case 0:
-                        fprintf(tb_file,"%d%s", tb.registros[i].at->inteiro, sep);
+                        fprintf(tb_file,"%d%s", tb.registros[j].at->inteiro, sep);
                         break;
                     case 1:
-                        fprintf(tb_file,"%f%s", tb.registros[i].at->real, sep);
+                        fprintf(tb_file,"%f%s", tb.registros[j].at->real, sep);
                         break;
                     case 2:
-                        fprintf(tb_file,"%f%s", tb.registros[i].at->dupla, sep);
+                        fprintf(tb_file,"%f%s", tb.registros[j].at->dupla, sep);
                         break;
                     case 3:
-                        fprintf(tb_file,"%c%s", tb.registros[i].at->caractere, sep);
+                        fprintf(tb_file,"%c%s", tb.registros[j].at->caractere, sep);
                         break;
                     case 4:
-                        fprintf(tb_file,"%s%s", tb.registros[i].at->string, sep);
+                        fprintf(tb_file,"%s%s", tb.registros[j].at->string, sep);
                         break;
                     default:
                         break;
@@ -109,37 +142,4 @@ int arquivar_tabela(Tabela tb)
         printf("ERRO: %s\n", strerror(errno));
         return -1;
     }    
-}
-
-int update_tables_config(Tabela tb)
-{
-    FILE * tb_config;
-    tb_config = fopen(tables_config, "r+");
-
-    if (tb_config == NULL)
-    {
-        printf("ERRO: não foi possível abrir um arquivo essencial para o programa\nCaminho para o arquivo: tables/tables.config\n");
-        printf("ERRO: %s\n", strerror(errno));
-        return -1;
-    }
-    else
-    {
-        char nome_tb_lida[MAX_NAME_LENGTH] = {0};
-        char str_formatada[] = "%%s";
-        strcat(str_formatada, sep);
-        while (tb_config != EOF)
-        {
-            fscanf(tb_config, str_formatada, nome_tb_lida);
-            if (strcmp(tb.nome_tb, nome_tb_lida) == 0)
-            {
-                fprintf(tb_config, "%s%s%i%s%i%s\n", tb.nome_tb, sep, tb.qte_at, sep, tb.qte_reg, sep);
-                fclose(tb_config);
-                return 2;
-            }
-        }
-    }
-    
-    fprintf(tb_config, "%s%s%i%s%i%s\n", tb.nome_tb, sep, tb.qte_at, sep, tb.qte_reg, sep);
-    fclose(tb_config);
-    return 2;
 }

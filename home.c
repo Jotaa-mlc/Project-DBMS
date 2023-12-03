@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "headers/tables_func.h"
 
@@ -24,7 +25,7 @@ int sair()//confirmação de saido
     printf("Certeza que deseja deixar o programa?\nDigite 's' para confirmar\n");
 
     scanf("%c", &resposta);
-
+    resposta = tolower(resposta);
     if(resposta == 's'){
         return 1;
     }else{
