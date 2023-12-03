@@ -25,9 +25,11 @@ int existe_tabela(char *nome_tb)
     else
     {
         char nome_tb_lida[MAX_NAME_LENGTH] = {0};
+        char str_formatada[] = "%%s";
+        strcat(str_formatada, sep);
         while (tb_config != EOF)
         {
-            fscanf(tb_config, "%s\n", nome_tb_lida);
+            fscanf(tb_config, str_formatada, nome_tb_lida);
             if (strcmp(nome_tb, nome_tb_lida) == 0)
             {
                 printf("A tabela já existe!\n");
@@ -93,6 +95,12 @@ int arquivar_tabela(Tabela tb)
         }
         
         fclose(tb_file);
+        if (update_tables_config(tb) != 2) 
+        {
+            printf("Cancelando operação...\n");
+            return -1;
+        }
+        
         return 2;
     }
     else
@@ -101,4 +109,37 @@ int arquivar_tabela(Tabela tb)
         printf("ERRO: %s\n", strerror(errno));
         return -1;
     }    
+}
+
+int update_tables_config(Tabela tb)
+{
+    FILE * tb_config;
+    tb_config = fopen(tables_config, "r+");
+
+    if (tb_config == NULL)
+    {
+        printf("ERRO: não foi possível abrir um arquivo essencial para o programa\nCaminho para o arquivo: tables/tables.config\n");
+        printf("ERRO: %s\n", strerror(errno));
+        return -1;
+    }
+    else
+    {
+        char nome_tb_lida[MAX_NAME_LENGTH] = {0};
+        char str_formatada[] = "%%s";
+        strcat(str_formatada, sep);
+        while (tb_config != EOF)
+        {
+            fscanf(tb_config, str_formatada, nome_tb_lida);
+            if (strcmp(tb.nome_tb, nome_tb_lida) == 0)
+            {
+                fprintf(tb_config, "%s%s%i%s%i%s\n", tb.nome_tb, sep, tb.qte_at, sep, tb.qte_reg, sep);
+                fclose(tb_config);
+                return 2;
+            }
+        }
+    }
+    
+    fprintf(tb_config, "%s%s%i%s%i%s\n", tb.nome_tb, sep, tb.qte_at, sep, tb.qte_reg, sep);
+    fclose(tb_config);
+    return 2;
 }
