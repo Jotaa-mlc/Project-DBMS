@@ -18,5 +18,5 @@ caso a gnt veja que não vai ser necessário a gnt pode mudar dnv
 
 tables.config:
     será um arquivo que irá auxiliar no gerenciamento das tabelas
-    Formatação:
-    nome_da_tabela$separador$qte_atributos
+    Exemplo:
+    tabela.itp|#@!1|#@!0|#@!

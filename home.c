@@ -40,6 +40,7 @@ int main()
 
     while (!logout)
     {
+        system("clear");
         print_main_menu();
 
         scanf("%d", &cmd);

@@ -26,8 +26,9 @@ int existe_tabela(char *nome_tb)
     else
     {
         char nome_tb_lida[MAX_NAME_LENGTH] = {0};
-        while (fgets(nome_tb_lida, strlen(nome_tb)+1, tb_config) != NULL)
+        while (fscanf(tb_config, "%s\n", nome_tb_lida) != EOF)
         {
+            strtok(nome_tb_lida, ".itp");
             if (strcmp(nome_tb, nome_tb_lida) == 0)
             {
                 printf("A tabela já existe!\n");
@@ -53,8 +54,9 @@ int update_tables_config(Tabela tb)
     else
     {
         char nome_tb_lida[MAX_NAME_LENGTH] = {0};
-        while (fgets(nome_tb_lida, strlen(tb.nome_tb)+1, tb_config) != NULL)
+        while (fscanf(tb_config, "%s\n", nome_tb_lida) != EOF)
         {
+            strtok(nome_tb_lida, ".itp");
             if (strcmp(tb.nome_tb, nome_tb_lida) == 0)
             {
                 fprintf(tb_config, "%s%s%i%s%i%s\n", tb.nome_tb, sep, tb.qte_at, sep, tb.qte_reg, sep);
