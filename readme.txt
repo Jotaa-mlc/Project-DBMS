@@ -8,4 +8,7 @@ Autores:
 Contribuições:
     João Artur:
         Menu Inicial;
-        função inserir tabela (tanto a parte em tables_func.c quanto em io_files.c);
+        função inserir tabela (tanto a parte em tables_func.c quanto em io_files.c);    
+    
+    Emilly vitória:
+        Função de listar os dados das tabelas 
