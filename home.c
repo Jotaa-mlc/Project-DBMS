@@ -24,7 +24,7 @@ int sair()//confirmação de saido
     char resposta = ' ';
     printf("Certeza que deseja deixar o programa?\nDigite 's' para confirmar\n");
 
-    scanf("%c", &resposta);
+    scanf("\n%c", &resposta);
     resposta = tolower(resposta);
     if(resposta == 's'){
         return 1;
@@ -83,4 +83,6 @@ int main()
                 break;
         }
     }
+
+    return 0;
 }

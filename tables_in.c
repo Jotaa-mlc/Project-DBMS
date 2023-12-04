@@ -11,7 +11,7 @@ int try_again()
 {
     int resposta = 2;
 
-    printf("Deseja tentar denovo? (1)\nDeseja cancelar a operação? (0)");
+    printf("Deseja tentar denovo? (1)\nDeseja cancelar a operação? (0)\n");
     scanf("%i", &resposta);
 
     return resposta;
@@ -98,16 +98,16 @@ Tabela new_tabela(char *nome_tb, char *nome_at, int tipo_at)
 */
 int criar_tabela()
 {
-    char nome_tb[MAX_NAME_LENGTH+8] = {0};//nome da tabela
-    char *nome_at;//nome do atributo
-    char *tipo_at;//tipo do atributo
+    char *nome_tb = calloc(MAX_NAME_LENGTH, sizeof(char));//nome da tabela
+    char *nome_at = calloc(MAX_NAME_LENGTH, sizeof(char));//nome do atributo
+    char *tipo_at = calloc(MAX_NAME_LENGTH, sizeof(char));//tipo do atributo
     char input_nome_tipo_at[MAX_NAME_LENGTH+10] = {0};//variável auxiliar de entrada do nome + tipo do atributo
     int tb_ok = 0, at_ok = 0, nome_ok = 0;//var auxiliar de erros
 
     while (!tb_ok)
     {
-        printf("Por favor, insira o nome da tabela a ser criada:\n");
-        fgets(nome_tb, MAX_NAME_LENGTH, stdin);
+        printf("Por favor, insira o nome da tabela a ser criada: ");
+        scanf("%s", nome_tb);
 
         nome_ok = checar_nome(nome_tb);
         if(nome_ok == 2)
@@ -131,9 +131,7 @@ int criar_tabela()
     while (!at_ok)
     {
         printf("Qual o nome do atributo que deseja incluir na tabela %s? Informe seguindo a formatação\n'nome_do_atributo tipo_de_dado'\nTipos de dados disponíveis: int, float, double, char e string\n", nome_tb);
-        fgets(input_nome_tipo_at, MAX_NAME_LENGTH+7, stdin);
-        nome_at = strtok(input_nome_tipo_at, " ");
-        tipo_at = strtok(NULL, " ");
+        scanf("\n%s %s", nome_at, tipo_at);
 
         nome_ok = checar_nome(nome_at);
         if(nome_ok == 2)
@@ -163,5 +161,6 @@ int criar_tabela()
         return -1;
     }
 
+    printf("Tabela Incluida com sucesso!\n\n");
     return 2;//sem erros durante a operação
 }

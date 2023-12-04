@@ -26,9 +26,7 @@ int existe_tabela(char *nome_tb)
     else
     {
         char nome_tb_lida[MAX_NAME_LENGTH] = {0};
-        char str_formatada[] = "%%s";
-        strcat(str_formatada, sep);
-        while (fscanf(tb_config, str_formatada, nome_tb_lida) != EOF)
+        while (fgets(nome_tb_lida, strlen(nome_tb)+1, tb_config) != NULL)
         {
             if (strcmp(nome_tb, nome_tb_lida) == 0)
             {
@@ -55,10 +53,7 @@ int update_tables_config(Tabela tb)
     else
     {
         char nome_tb_lida[MAX_NAME_LENGTH] = {0};
-        char str_formatada[] = "%%s";
-        strcat(str_formatada, sep);
-
-        while (fscanf(tb_config, str_formatada, nome_tb_lida) != EOF)
+        while (fgets(nome_tb_lida, strlen(tb.nome_tb)+1, tb_config) != NULL)
         {
             if (strcmp(tb.nome_tb, nome_tb_lida) == 0)
             {
