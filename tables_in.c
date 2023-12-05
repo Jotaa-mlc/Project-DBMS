@@ -6,6 +6,7 @@
 #include "headers/io_files.h"
 
 char sep[] = "|#@!";//separador dos atributos das tabelas
+char file_extension[] = ".itp";
 
 int try_again()
 {
@@ -70,27 +71,6 @@ int checar_tipo(char *tipo)
     return try_again();
 }
 
-Tabela new_tabela(char *nome_tb, char *nome_at, int tipo_at)
-{
-    Tabela tb;
-    tb.nome_tb = calloc(strlen(nome_tb), sizeof(char));
-    strcpy(tb.nome_tb, nome_tb);
-
-    tb.nomes_at = malloc(sizeof(char*));
-    tb.nomes_at[0] = calloc(strlen(nome_at), sizeof(char));
-    strcpy(tb.nomes_at[0], nome_at);
-
-    tb.tipos_at = calloc(1, sizeof(int));
-    tb.tipos_at[0] = tipo_at;
-
-    tb.qte_at = 1;
-    tb.qte_reg = 0;
-    
-    tb.registros = NULL;
-
-    return tb;
-}
-
 /**
  * Cria a tabela conforme as entradas do usuário
  * 
@@ -112,13 +92,13 @@ int criar_tabela()
         nome_ok = checar_nome(nome_tb);
         if(nome_ok == 2)
         {
-            nome_ok = existe_tabela(nome_tb);
-            if(nome_ok == 2) tb_ok = 1;
+            nome_ok = existe_tabela(nome_tb) ? try_again() : 2;
+            tb_ok = (nome_ok == 2) ? 1 : 0;
         }
         //não é um elif por conta da alteração de nome_ok caso a tabela já exista
         if (nome_ok == 1)
         {
-            memset(nome_tb, '\0', MAX_NAME_LENGTH+8);
+            memset(nome_tb, '\0', sizeof(nome_tb));
         }
         //não é um elif por conta da alteração de nome_ok caso a tabela já exista
         if (nome_ok == 0)
@@ -137,7 +117,7 @@ int criar_tabela()
         if(nome_ok == 2)
         {
             nome_ok = checar_tipo(tipo_at);
-            if(nome_ok > 1) at_ok = 1;
+            at_ok = (nome_ok > 1) ? 1 : 0;
         }
         //não é um elif por conta da alteração de nome_ok caso ocorra um erro na seleção do tipo
         if (nome_ok == 1)
@@ -154,13 +134,55 @@ int criar_tabela()
 
     int tipo_at_int = nome_ok - 2;//por conta do conflito entre os retornos
 
-    Tabela tb = new_tabela(nome_tb, nome_at, tipo_at_int);
+    Tabela * tb = alocar_tabela(1,0);
     if(arquivar_tabela(tb) != 2)
     {
         printf("Cancelando operação...\n");
         return -1;
     }
 
+    free(nome_at);
+    free(nome_tb);
+    free(tipo_at);
+
     printf("Tabela Incluida com sucesso!\n\n");
     return 2;//sem erros durante a operação
+}
+
+int inserir_registro()
+{
+    int insert_ok = 0;
+
+    char *nome_tb = calloc(MAX_NAME_LENGTH, sizeof(char));//nome da tabela
+    char *nome_at = calloc(MAX_NAME_LENGTH, sizeof(char));//nome do atributo
+
+    while (!insert_ok)
+    {
+        printf("Em qual tabela deseja inserir um registro? ");
+        scanf("%s", nome_tb);
+
+        if(existe_tabela(nome_tb))
+        {
+            Tabela * tb = carregar_tabela(nome_tb);
+            Registro * registros = realloc(tb->registros, tb->qte_reg+1);
+
+            if (registros != NULL)
+            {
+                tb->registros = registros;
+                
+            }
+            else
+            {
+
+            }
+        }
+        else
+        {
+            printf("A tabela %s não existe!\n", nome_tb);
+            insert_ok = !try_again();
+        }
+    }
+
+    free(nome_tb);
+    free(nome_at);
 }
