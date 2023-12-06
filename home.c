@@ -56,7 +56,7 @@ int main()
                 break;
             
             case 2://inserir registro
-                /* code */
+                inserir_registro();
                 break;
             
             case 3://exibir tabela

@@ -149,6 +149,39 @@ int criar_tabela()
     return 2;//sem erros durante a operação
 }
 
+Registro ler_registro(Tabela * tb)
+{
+    Registro reg;
+    scanf("%u ", &reg.id);
+
+    reg.at = calloc(tb->qte_at, sizeof(Atributo));
+    for (unsigned int i = 0; i < tb->qte_at; i++)
+    {
+        switch (tb->tipos_at[i])
+            {
+                case 0:
+                    scanf("%d ", &tb->registros[i].at->inteiro);
+                    break;
+                case 1:
+                    scanf("%f ", &tb->registros[i].at->real);
+                    break;
+                case 2:
+                    scanf("%lf ", &tb->registros[i].at->dupla);
+                    break;
+                case 3:
+                    scanf("%c ", &tb->registros[i].at->caractere);
+                    break;
+                case 4:
+                    scanf("%s ", tb->registros[i].at->string);
+                    break;
+                default:
+                    break;
+            }
+    }
+
+    return reg;
+}
+
 int inserir_registro()
 {
     int insert_ok = 0;
@@ -156,6 +189,7 @@ int inserir_registro()
     char *nome_tb = calloc(MAX_NAME_LENGTH, sizeof(char));//nome da tabela
     char *nome_at = calloc(MAX_NAME_LENGTH, sizeof(char));//nome do atributo
 
+    Tabela * tb;
     while (!insert_ok)
     {
         printf("Em qual tabela deseja inserir um registro? ");
@@ -163,17 +197,27 @@ int inserir_registro()
 
         if(existe_tabela(nome_tb))
         {
-            Tabela * tb = carregar_tabela(nome_tb);
+            tb = carregar_tabela(nome_tb);
             Registro * registros = realloc(tb->registros, tb->qte_reg+1);
 
             if (registros != NULL)
             {
                 tb->registros = registros;
                 
+                printf("Insira os atributos do registro conforme:\n");
+                printf("id ");
+                for (unsigned int i = 0; i < tb->qte_at; i++) printf("%s ", tb->nomes_at[i]);
+                printf("\n");
+
+                tb->registros[tb->qte_reg] = ler_registro(tb);
+                tb->qte_reg++;
+                insert_ok = 1;
+                break;
             }
             else
             {
-
+                printf("ERRO: houve um problema ao inserir um registro\n");
+                break;
             }
         }
         else
@@ -183,6 +227,12 @@ int inserir_registro()
         }
     }
 
+    if (arquivar_tabela(tb) == 2 && insert_ok)
+    {
+        printf("Registro inserido com sucesso!\n");
+    }
+    
     free(nome_tb);
     free(nome_at);
+    free_tabela(tb);
 }
