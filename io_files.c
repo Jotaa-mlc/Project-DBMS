@@ -37,7 +37,8 @@ int update_tables_config(Tabela *tb)
     char nome_tb_lida[MAX_NAME_LENGTH] = {0};
     while (fscanf(tb_config, "%s\n", nome_tb_lida) != EOF)
     {
-        strtok(nome_tb_lida, file_extension);
+        fseek(tb_config, -1*strlen(nome_tb_lida)-1, SEEK_CUR);
+        strtok(nome_tb_lida, sep);
         if (strcmp(tb->nome_tb, nome_tb_lida) == 0)
         {
             fprintf(tb_config, "%s%s%i%s%i%s\n", tb->nome_tb, sep, tb->qte_at, sep, tb->qte_reg, sep);
@@ -83,7 +84,7 @@ int existe_tabela(char *nome_tb)
         char nome_tb_lida[MAX_NAME_LENGTH] = {0};
         while (fscanf(tb_config, "%s\n", nome_tb_lida) != EOF)
         {
-            strtok(nome_tb_lida, file_extension);
+            strtok(nome_tb_lida, sep);
             if (strcmp(nome_tb, nome_tb_lida) == 0) return 1;
         }
 
@@ -161,6 +162,8 @@ Tabela *alocar_tabela(unsigned int qte_at, unsigned int qte_reg)
 {   
     Tabela * tb;
     tb = calloc(1, sizeof(Tabela));
+    tb->qte_at = qte_at;
+    tb->qte_reg = qte_reg;
     tb->nome_tb = calloc(MAX_NAME_LENGTH, sizeof(char));
     tb->nomes_at = calloc(qte_at, sizeof(char *));
     for (unsigned int i = 0; i < qte_at; i++) tb->nomes_at[i] = calloc(MAX_NAME_LENGTH, sizeof(char));
@@ -187,18 +190,14 @@ void free_tabela(Tabela *tb)
 Tabela *carregar_tabela(char *nome_tb)
 {
     unsigned int qte_reg = 0, qte_at = 0;
-    char nome_tb_file[MAX_NAME_LENGTH];
     char *buffer = calloc(MAX_NAME_LENGTH, sizeof(char));
-
-    strcpy(nome_tb_file, nome_tb);
-    strcat(nome_tb_file, file_extension);
 
     FILE * tb_config = load_tb_config("r");
     //busca pelo nome da tabela e lê qte_at && qte_reg
     while (fscanf(tb_config, "%s\n", buffer) != EOF)
     {
         strtok(buffer, sep);
-        if (strcmp(nome_tb_file, buffer) == 0)
+        if (strcmp(nome_tb, buffer) == 0)
         {
             strcpy(buffer, strtok(NULL, sep));
             sscanf(buffer, "%u", &qte_at);
@@ -214,13 +213,12 @@ Tabela *carregar_tabela(char *nome_tb)
     Tabela *tb = alocar_tabela(qte_at, qte_reg);
     
     strcpy(tb->nome_tb, nome_tb);
-    tb->qte_at = qte_at;
-    tb->qte_reg = qte_reg;
     
     FILE * tb_file =  load_tb_file(nome_tb, "r");
     //Lê os nomes dos atributos e seus tipos
     fscanf(tb_file, "%s\n", buffer);
     char * slice = strtok(buffer, sep);
+    slice = strtok(NULL, sep);
     for (unsigned int i = 0; i < qte_at; i++)
     {   
         strcpy(tb->nomes_at[i], slice);

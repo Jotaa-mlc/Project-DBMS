@@ -8,6 +8,19 @@
 char sep[] = "|#@!";//separador dos atributos das tabelas
 char file_extension[] = ".itp";
 
+/**
+* Lista com os possíveis tipos para os parâmetros
+* 
+* @return srt com o nome do tipo [int, float, double, char, string]
+*/
+char tipos_list[5][8] = {
+    "int",//0
+    "float",//1
+    "double",//2
+    "char",//3
+    "string"//4
+};
+
 int try_again()
 {
     int resposta = 2;
@@ -49,19 +62,6 @@ int checar_nome(char *nome)
 */
 int checar_tipo(char *tipo)
 {
-    /**
-    * Lista com os possíveis tipos para os parâmetros
-    * 
-    * @return srt com o nome do tipo [int, float, double, char, string]
-    */
-    char tipos_list[5][8] = {
-        "int",//0
-        "float",//1
-        "double",//2
-        "char",//3
-        "string"//4
-    };
-
     for(int tipo_int = 0; tipo_int < 5; tipo_int++)
     {
         if(strcmp(tipo, tipos_list[tipo_int]) == 0) return tipo_int+2;
@@ -135,6 +135,8 @@ int criar_tabela()
     int tipo_at_int = nome_ok - 2;//por conta do conflito entre os retornos
 
     Tabela * tb = alocar_tabela(1,0);
+    strcpy(tb->nome_tb, nome_tb);
+    strcpy(tb->nomes_at[0], nome_at);
     if(arquivar_tabela(tb) != 2)
     {
         printf("Cancelando operação...\n");
@@ -144,6 +146,7 @@ int criar_tabela()
     free(nome_at);
     free(nome_tb);
     free(tipo_at);
+    free_tabela(tb);
 
     printf("Tabela Incluida com sucesso!\n\n");
     return 2;//sem erros durante a operação
@@ -160,19 +163,19 @@ Registro ler_registro(Tabela * tb)
         switch (tb->tipos_at[i])
             {
                 case 0:
-                    scanf("%d ", &tb->registros[i].at->inteiro);
+                    scanf("%d", &reg.at[i].inteiro);
                     break;
                 case 1:
-                    scanf("%f ", &tb->registros[i].at->real);
+                    scanf("%f", &reg.at[i].real);
                     break;
                 case 2:
-                    scanf("%lf ", &tb->registros[i].at->dupla);
+                    scanf("%lf", &reg.at[i].dupla);
                     break;
                 case 3:
-                    scanf("%c ", &tb->registros[i].at->caractere);
+                    scanf("%c", &reg.at[i].caractere);
                     break;
                 case 4:
-                    scanf("%s ", tb->registros[i].at->string);
+                    scanf("%s", reg.at[i].string);
                     break;
                 default:
                     break;
@@ -187,7 +190,6 @@ int inserir_registro()
     int insert_ok = 0;
 
     char *nome_tb = calloc(MAX_NAME_LENGTH, sizeof(char));//nome da tabela
-    char *nome_at = calloc(MAX_NAME_LENGTH, sizeof(char));//nome do atributo
 
     Tabela * tb;
     while (!insert_ok)
@@ -199,14 +201,13 @@ int inserir_registro()
         {
             tb = carregar_tabela(nome_tb);
             Registro * registros = realloc(tb->registros, tb->qte_reg+1);
+            registros[tb->qte_reg].at = calloc(1, sizeof(Atributo));
 
             if (registros != NULL)
             {
-                tb->registros = registros;
-                
                 printf("Insira os atributos do registro conforme:\n");
                 printf("id ");
-                for (unsigned int i = 0; i < tb->qte_at; i++) printf("%s ", tb->nomes_at[i]);
+                for (unsigned int i = 0; i < tb->qte_at; i++) printf("%s (%s) ", tb->nomes_at[i], tipos_list[tb->tipos_at[i]]);
                 printf("\n");
 
                 tb->registros[tb->qte_reg] = ler_registro(tb);
@@ -223,16 +224,20 @@ int inserir_registro()
         else
         {
             printf("A tabela %s não existe!\n", nome_tb);
-            insert_ok = !try_again();
+            if(!try_again()) break;
         }
     }
 
-    if (arquivar_tabela(tb) == 2 && insert_ok)
+    if (insert_ok)
     {
-        printf("Registro inserido com sucesso!\n");
+        if(arquivar_tabela(tb) == 2) printf("Registro inserido com sucesso!\n");
+        else printf("ERRO: houve um problema ao salvar a tabela.\n");
+    }
+    else
+    {
+        printf("Cancelando operação...\n");
     }
     
     free(nome_tb);
-    free(nome_at);
-    free_tabela(tb);
+    if(tb!= NULL) free_tabela(tb);
 }
