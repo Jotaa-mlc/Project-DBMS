@@ -8,6 +8,7 @@
 char sep[] = "|#@!";//separador dos atributos das tabelas
 char file_extension[] = ".itp";
 
+#pragma region auxiliar functions and global variables
 /**
 * Lista com os possíveis tipos para os parâmetros
 * 
@@ -71,15 +72,25 @@ int checar_tipo(char *tipo)
     return try_again();
 }
 
-/**
- * Cria a tabela conforme as entradas do usuário
- * 
- * @returns 
-*/
+int existe_dupla_pk(Tabela *tb)
+{
+    for (unsigned int i = 0; i < tb->qte_reg; i++)
+    {
+        for (unsigned int j = i+1; j < tb->qte_reg; j++)
+        {
+            if (tb->registros[i].id == tb->registros[j].id) return 1;
+        }
+    }
+    
+    return 0;
+}
+#pragma endregion
+
+#pragma region main functions
 int criar_tabela()
 {
     char *nome_tb = calloc(MAX_NAME_LENGTH, sizeof(char));//nome da tabela
-    char *nome_pk = calloc(MAX_NAME_LENGTH, sizeof(char));//nome da tabela
+    char *nome_pk = calloc(MAX_NAME_LENGTH, sizeof(char));//nome da chave_primária
     char *nome_at = calloc(MAX_NAME_LENGTH, sizeof(char));//nome do atributo
     char *tipo_at = calloc(MAX_NAME_LENGTH, sizeof(char));//tipo do atributo
     char input_nome_tipo_at[MAX_NAME_LENGTH+10] = {0};//variável auxiliar de entrada do nome + tipo do atributo
@@ -166,23 +177,9 @@ int criar_tabela()
     return 2;//sem erros durante a operação
 }
 
-int existe_dupla_pk(Tabela *tb)
-{
-    for (unsigned int i = 0; i < tb->qte_reg; i++)
-    {
-        for (unsigned int j = i+1; j < tb->qte_reg; j++)
-        {
-            if (tb->registros[i].id == tb->registros[j].id) return 1;
-        }
-    }
-    
-    return 0;
-}
-
 int inserir_registro()
 {
     int insert_ok = 0, reg_ok = 0;
-
     char *nome_tb = calloc(MAX_NAME_LENGTH, sizeof(char));//nome da tabela
 
     Tabela * tb = NULL;
@@ -269,3 +266,4 @@ int inserir_registro()
     free(nome_tb);
     if(tb != NULL) free_tabela(tb);
 }
+#pragma endregion
