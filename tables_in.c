@@ -79,6 +79,7 @@ int checar_tipo(char *tipo)
 int criar_tabela()
 {
     char *nome_tb = calloc(MAX_NAME_LENGTH, sizeof(char));//nome da tabela
+    char *nome_pk = calloc(MAX_NAME_LENGTH, sizeof(char));//nome da tabela
     char *nome_at = calloc(MAX_NAME_LENGTH, sizeof(char));//nome do atributo
     char *tipo_at = calloc(MAX_NAME_LENGTH, sizeof(char));//tipo do atributo
     char input_nome_tipo_at[MAX_NAME_LENGTH+10] = {0};//variável auxiliar de entrada do nome + tipo do atributo
@@ -98,7 +99,7 @@ int criar_tabela()
         //não é um elif por conta da alteração de nome_ok caso a tabela já exista
         if (nome_ok == 1)
         {
-            memset(nome_tb, '\0', sizeof(nome_tb));
+            memset(nome_tb, 0, sizeof(nome_tb));
         }
         //não é um elif por conta da alteração de nome_ok caso a tabela já exista
         if (nome_ok == 0)
@@ -110,6 +111,19 @@ int criar_tabela()
 
     while (!at_ok)
     {
+        int pk_ok = 0;
+        while(!pk_ok)
+        {
+            printf("Defina o nome da CHAVE PRIMARIA (pk): ");
+            scanf("\n%s", nome_pk);
+            pk_ok = checar_nome(nome_pk);
+            if(pk_ok == 0)
+            {
+                printf("Cancelando operação...\n");
+                return 0;
+            } 
+        }
+
         printf("Qual o nome do atributo que deseja incluir na tabela %s? Informe seguindo a formatação\n'nome_do_atributo tipo_de_dado'\nTipos de dados disponíveis: int, float, double, char e string\n", nome_tb);
         scanf("\n%s %s", nome_at, tipo_at);
 
@@ -132,11 +146,11 @@ int criar_tabela()
         }
     }
 
-    int tipo_at_int = nome_ok - 2;//por conta do conflito entre os retornos
-
     Tabela * tb = alocar_tabela(1,0);
     strcpy(tb->nome_tb, nome_tb);
     strcpy(tb->nomes_at[0], nome_at);
+    tb->tipos_at[0] =  nome_ok - 2;
+    strcpy(tb->nome_pk, nome_pk);
     if(arquivar_tabela(tb) != 2)
     {
         printf("Cancelando operação...\n");
@@ -152,46 +166,26 @@ int criar_tabela()
     return 2;//sem erros durante a operação
 }
 
-Registro ler_registro(Tabela * tb)
+int existe_dupla_pk(Tabela *tb)
 {
-    Registro reg;
-    scanf("%u ", &reg.id);
-
-    reg.at = calloc(tb->qte_at, sizeof(Atributo));
-    for (unsigned int i = 0; i < tb->qte_at; i++)
+    for (unsigned int i = 0; i < tb->qte_reg; i++)
     {
-        switch (tb->tipos_at[i])
-            {
-                case 0:
-                    scanf("%d", &reg.at[i].inteiro);
-                    break;
-                case 1:
-                    scanf("%f", &reg.at[i].real);
-                    break;
-                case 2:
-                    scanf("%lf", &reg.at[i].dupla);
-                    break;
-                case 3:
-                    scanf("%c", &reg.at[i].caractere);
-                    break;
-                case 4:
-                    scanf("%s", reg.at[i].string);
-                    break;
-                default:
-                    break;
-            }
+        for (unsigned int j = i+1; j < tb->qte_reg; j++)
+        {
+            if (tb->registros[i].id == tb->registros[j].id) return 1;
+        }
     }
-
-    return reg;
+    
+    return 0;
 }
 
 int inserir_registro()
 {
-    int insert_ok = 0;
+    int insert_ok = 0, reg_ok = 0;
 
     char *nome_tb = calloc(MAX_NAME_LENGTH, sizeof(char));//nome da tabela
 
-    Tabela * tb;
+    Tabela * tb = NULL;
     while (!insert_ok)
     {
         printf("Em qual tabela deseja inserir um registro? ");
@@ -200,20 +194,53 @@ int inserir_registro()
         if(existe_tabela(nome_tb))
         {
             tb = carregar_tabela(nome_tb);
-            Registro * registros = realloc(tb->registros, tb->qte_reg+1);
-            registros[tb->qte_reg].at = calloc(1, sizeof(Atributo));
-
-            if (registros != NULL)
+            Registro * new_registros = realloc(tb->registros, (sizeof(Registro) * (tb->qte_reg+1)));
+            if (new_registros != NULL)
             {
-                printf("Insira os atributos do registro conforme:\n");
-                printf("id ");
-                for (unsigned int i = 0; i < tb->qte_at; i++) printf("%s (%s) ", tb->nomes_at[i], tipos_list[tb->tipos_at[i]]);
-                printf("\n");
-
-                tb->registros[tb->qte_reg] = ler_registro(tb);
-                tb->qte_reg++;
-                insert_ok = 1;
-                break;
+                tb->registros = new_registros;
+                tb->registros[tb->qte_reg].at = calloc(tb->qte_at, sizeof(Atributo));
+                while (!reg_ok)
+                {
+                    printf("Insira os atributos do registro conforme:\n");
+                    printf("%s ", tb->nome_pk);
+                    for (unsigned int i = 0; i < tb->qte_at; i++) printf("%s (%s) ", tb->nomes_at[i], tipos_list[tb->tipos_at[i]]);
+                    printf("\n");
+                    
+                    scanf("%u ", &tb->registros[tb->qte_reg].id);
+                    for (unsigned int i = 0; i < tb->qte_at; i++)
+                    {
+                        switch (tb->tipos_at[i])
+                        {
+                            case 0:
+                                scanf("%d", &tb->registros[tb->qte_reg].at[i].inteiro);
+                                break;
+                            case 1:
+                                scanf("%f", &tb->registros[tb->qte_reg].at[i].real);
+                                break;
+                            case 2:
+                                scanf("%lf", &tb->registros[tb->qte_reg].at[i].dupla);
+                                break;
+                            case 3:
+                                scanf("%c", &tb->registros[tb->qte_reg].at[i].caractere);
+                                break;
+                            case 4:
+                                scanf("%s", tb->registros[tb->qte_reg].at[i].string);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    if (!existe_dupla_pk(tb))
+                    {
+                        tb->qte_reg++;
+                        reg_ok = 1, insert_ok = 1;
+                    }
+                    else
+                    {
+                        printf("Já existe um resgisto com essa chave primária!\n");
+                        reg_ok = !try_again();
+                    }
+                }
             }
             else
             {
@@ -224,11 +251,12 @@ int inserir_registro()
         else
         {
             printf("A tabela %s não existe!\n", nome_tb);
-            if(!try_again()) break;
+            insert_ok = !try_again();
         }
+        if(reg_ok) break;
     }
 
-    if (insert_ok)
+    if (insert_ok && reg_ok)
     {
         if(arquivar_tabela(tb) == 2) printf("Registro inserido com sucesso!\n");
         else printf("ERRO: houve um problema ao salvar a tabela.\n");
@@ -239,5 +267,5 @@ int inserir_registro()
     }
     
     free(nome_tb);
-    if(tb!= NULL) free_tabela(tb);
+    if(tb != NULL) free_tabela(tb);
 }

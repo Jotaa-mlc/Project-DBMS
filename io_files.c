@@ -37,10 +37,11 @@ int update_tables_config(Tabela *tb)
     char nome_tb_lida[MAX_NAME_LENGTH] = {0};
     while (fscanf(tb_config, "%s\n", nome_tb_lida) != EOF)
     {
-        fseek(tb_config, -1*strlen(nome_tb_lida)-1, SEEK_CUR);
+        int offset = -1*strlen(nome_tb_lida)-1;
         strtok(nome_tb_lida, sep);
         if (strcmp(tb->nome_tb, nome_tb_lida) == 0)
         {
+            fseek(tb_config, offset, SEEK_CUR);
             fprintf(tb_config, "%s%s%i%s%i%s\n", tb->nome_tb, sep, tb->qte_at, sep, tb->qte_reg, sep);
             fclose(tb_config);
             return 2;
@@ -104,7 +105,7 @@ int arquivar_tabela(Tabela *tb)
 
     if (tb_file != NULL)
     {
-        fprintf(tb_file,"id%s", sep);
+        fprintf(tb_file,"%s%s", tb->nome_pk, sep);
 
         for (unsigned int i = 0; i < tb->qte_at; i++)//insere os atributos no cabeçalho do arquivo
         {
@@ -120,19 +121,19 @@ int arquivar_tabela(Tabela *tb)
                 switch (tb->tipos_at[j])
                 {
                     case 0:
-                        fprintf(tb_file,"%d%s", tb->registros[j].at->inteiro, sep);
+                        fprintf(tb_file,"%d%s", tb->registros[i].at[j].inteiro, sep);
                         break;
                     case 1:
-                        fprintf(tb_file,"%f%s", tb->registros[j].at->real, sep);
+                        fprintf(tb_file,"%f%s", tb->registros[i].at[j].real, sep);
                         break;
                     case 2:
-                        fprintf(tb_file,"%lf%s", tb->registros[j].at->dupla, sep);
+                        fprintf(tb_file,"%lf%s", tb->registros[i].at[j].dupla, sep);
                         break;
                     case 3:
-                        fprintf(tb_file,"%c%s", tb->registros[j].at->caractere, sep);
+                        fprintf(tb_file,"%c%s", tb->registros[i].at[j].caractere, sep);
                         break;
                     case 4:
-                        fprintf(tb_file,"%s%s", tb->registros[j].at->string, sep);
+                        fprintf(tb_file,"%s%s", tb->registros[i].at[j].string, sep);
                         break;
                     default:
                         break;
@@ -165,13 +166,13 @@ Tabela *alocar_tabela(unsigned int qte_at, unsigned int qte_reg)
     tb->qte_at = qte_at;
     tb->qte_reg = qte_reg;
     tb->nome_tb = calloc(MAX_NAME_LENGTH, sizeof(char));
+    tb->nome_pk = calloc(MAX_NAME_LENGTH, sizeof(char));
     tb->nomes_at = calloc(qte_at, sizeof(char *));
     for (unsigned int i = 0; i < qte_at; i++) tb->nomes_at[i] = calloc(MAX_NAME_LENGTH, sizeof(char));
     tb->tipos_at = calloc(qte_at, sizeof(int));
 
-    Registro * registros = calloc(qte_reg, sizeof(Registro));
-    for(unsigned int i = 0; i < qte_reg; i++) registros[i].at = calloc(qte_at, sizeof(Atributo));
-    tb->registros = registros;
+    tb->registros = calloc(qte_reg, sizeof(Registro));
+    for(unsigned int i = 0; i < qte_reg; i++) tb->registros[i].at = calloc(qte_at, sizeof(Atributo));
 
     return tb;
 }
@@ -179,10 +180,11 @@ Tabela *alocar_tabela(unsigned int qte_at, unsigned int qte_reg)
 void free_tabela(Tabela *tb)
 {
     free(tb->nome_tb);
+    free(tb->nome_pk);
     for (unsigned int i = 0; i < tb->qte_at; i++) free(tb->nomes_at[i]);
     free(tb->nomes_at);
+    for (unsigned int i = 0; i < tb->qte_reg; i++) free(tb->registros[i].at);    
     free(tb->tipos_at);
-    for (unsigned int i = 0; i < tb->qte_at; i++) free(tb->registros->at);
     free(tb->registros);
     free(tb);
 }
@@ -218,6 +220,7 @@ Tabela *carregar_tabela(char *nome_tb)
     //Lê os nomes dos atributos e seus tipos
     fscanf(tb_file, "%s\n", buffer);
     char * slice = strtok(buffer, sep);
+    strcpy(tb->nome_pk, slice);
     slice = strtok(NULL, sep);
     for (unsigned int i = 0; i < qte_at; i++)
     {   
@@ -242,25 +245,29 @@ Tabela *carregar_tabela(char *nome_tb)
             switch (tb->tipos_at[j])
             {
                 case 0:
-                    sscanf(slice,"%d", &tb->registros[j].at->inteiro);
+                    sscanf(slice,"%d", &tb->registros[i].at[j].inteiro);
                     break;
                 case 1:
-                    sscanf(slice,"%f", &tb->registros[j].at->real);
+                    sscanf(slice,"%f", &tb->registros[i].at[j].real);
                     break;
                 case 2:
-                    sscanf(slice,"%lf", &tb->registros[j].at->dupla);
+                    sscanf(slice,"%lf", &tb->registros[i].at[j].dupla);
                     break;
                 case 3:
-                    sscanf(slice,"%c", &tb->registros[j].at->caractere);
+                    sscanf(slice,"%c", &tb->registros[i].at[j].caractere);
                     break;
                 case 4:
-                    sscanf(slice,"%s", tb->registros[j].at->string);
+                    sscanf(slice,"%s", tb->registros[i].at[j].string);
                     break;
                 default:
                     break;
             }
         }
     }
+
+    free(tb_config);
+    free(tb_file);
+    free(buffer);
     
     return tb;
 }

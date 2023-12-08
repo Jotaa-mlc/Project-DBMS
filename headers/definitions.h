@@ -6,7 +6,7 @@ typedef union properties
     float real;
     double dupla;
     char caractere;
-    char *string;
+    char string[MAX_NAME_LENGTH];
 } Atributo;
 
 typedef struct reg
@@ -18,6 +18,7 @@ typedef struct reg
 typedef struct table
 {
     char *nome_tb;
+    char *nome_pk;
     char **nomes_at;
     int *tipos_at;//int, float, double, char, string
     unsigned int qte_at, qte_reg;
