@@ -40,8 +40,6 @@ int main()
 
     while (!logout)
     {
-        system("clear");
-        fflush(stdin);
         print_main_menu();
 
         scanf("%d", &cmd);
@@ -53,7 +51,7 @@ int main()
                 break;
             
             case 1://listar tabelas
-                /* code */
+                listar_tabelas();
                 break;
             
             case 2://inserir registro
@@ -61,7 +59,7 @@ int main()
                 break;
             
             case 3://exibir tabela
-                /* code */
+                exibir_tabela();
                 break;
             
             case 4://pesquisar

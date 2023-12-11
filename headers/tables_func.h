@@ -11,3 +11,5 @@ int criar_tabela();
 void inserir_registro();
 int remover_registro();
 void remover_tabela();
+void listar_tabelas();
+void exibir_tabela();
