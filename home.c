@@ -69,7 +69,7 @@ int main()
                 break;
             
             case 5://excluir registro
-                /* code */
+                remover_registro();
                 break;
             
             case 6://excluir tabela

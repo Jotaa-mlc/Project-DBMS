@@ -4,124 +4,13 @@
 #include <string.h>
  
 #include "headers/definitions.h"
-#include "headers/tables_func.h"
+#include "headers/io_files.h"
 
-extern char sep[];
-extern char file_extension[];
-char tables_folder_path[MAX_NAME_LENGTH] = "tables/";
+char sep[] = "|#@!";//separador dos atributos das tabelas
+char file_extension[] = ".itp";
+char tables_folder_path[] = "tables/";
 char tables_config[] = "tables/tables.config";
 
-#pragma region auxiliar functions
-/**
- * Recebe o nome da tabela e o modo de abertura;
- * @return ptr para o arquivo OU NULL em caso de erro;
-*/
-FILE * load_tb_file(char *nome_tb, char *open_mode)
-{
-    char table_path[MAX_NAME_LENGTH] = {0};
-    strcpy(table_path, tables_folder_path);
-    strcat(table_path, nome_tb);
-    strcat(table_path, file_extension);
-
-    FILE * tb_file = fopen(table_path, open_mode);
-
-    if (tb_file == NULL)
-    {
-        printf("ERRO: não foi possível abrir o arquivo da tabela %s\n", nome_tb);
-        printf("ERRO: %s\n", strerror(errno));
-        return NULL;
-    }
-    else
-    {
-        return tb_file;
-    }
-}
-
-/**
- * Carrega o arquivo tables.config
- * @return ptr para o arquivo OU NULL em caso de erro
-*/
-FILE * load_tb_config(char *open_mode)
-{
-    FILE * tb_config;
-    tb_config = fopen(tables_config, open_mode);
-    if (tb_config == NULL)
-    {
-        printf("ERRO: não foi possível abrir um arquivo essencial para o programa\nCaminho para o arquivo: tables/tables.config\n");
-        printf("ERRO: %s\n", strerror(errno));
-        return NULL;
-    }
-    else
-    {
-        return tb_config;
-    }
-}
-
-/**
- * Atualiza o arquivo tables.config baseado na tabela passada
- * Se ela já existe, atualiza; Se não, a insere
-*/
-void update_tables_config(Tabela *tb)
-{
-    FILE * tb_config = load_tb_config("r+");
-    char nome_tb_lida[MAX_NAME_LENGTH] = {0};
-    while (fscanf(tb_config, "%s\n", nome_tb_lida) != EOF)
-    {
-        int offset = -1*strlen(nome_tb_lida)-1;
-        strtok(nome_tb_lida, sep);
-        if (strcmp(tb->nome_tb, nome_tb_lida) == 0) fseek(tb_config, offset, SEEK_CUR);//volta o ptr para o começo da linha se achar a tabela
-    }
-
-    fprintf(tb_config, "%s%s%i%s%i%s\n", tb->nome_tb, sep, tb->qte_at, sep, tb->qte_reg, sep);
-    fclose(tb_config);
-}
-
-int existe_tabela(char *nome_tb)
-{
-    FILE * tb_config;
-    tb_config = load_tb_config("r");
-        char nome_tb_lida[MAX_NAME_LENGTH] = {0};
-        while (fscanf(tb_config, "%s\n", nome_tb_lida) != EOF)
-        {
-            strtok(nome_tb_lida, sep);
-            if (strcmp(nome_tb, nome_tb_lida) == 0) return 1;
-        }
-
-        return 0;   
-}
-
-Tabela *alocar_tabela(unsigned int qte_at, unsigned int qte_reg)
-{   
-    Tabela * tb;
-    tb = calloc(1, sizeof(Tabela));
-    tb->qte_at = qte_at;
-    tb->qte_reg = qte_reg;
-    tb->nome_tb = calloc(MAX_NAME_LENGTH, sizeof(char));
-    tb->nome_pk = calloc(MAX_NAME_LENGTH, sizeof(char));
-    tb->nomes_at = calloc(qte_at, sizeof(char *));
-    for (unsigned int i = 0; i < qte_at; i++) tb->nomes_at[i] = calloc(MAX_NAME_LENGTH, sizeof(char));
-    tb->tipos_at = calloc(qte_at, sizeof(int));
-
-    tb->registros = calloc(qte_reg, sizeof(Registro));
-    for(unsigned int i = 0; i < qte_reg; i++) tb->registros[i].at = calloc(qte_at, sizeof(Atributo));
-
-    return tb;
-}
-
-void free_tabela(Tabela *tb)
-{
-    free(tb->nome_tb);
-    free(tb->nome_pk);
-    for (unsigned int i = 0; i < tb->qte_at; i++) free(tb->nomes_at[i]);
-    free(tb->nomes_at);
-    for (unsigned int i = 0; i < tb->qte_reg; i++) free(tb->registros[i].at);    
-    free(tb->tipos_at);
-    free(tb->registros);
-    free(tb);
-}
-#pragma endregion
-
-#pragma region main functions
 /**
  * Cria/sobreescreve o arquivo da tabela indicada
  * 
@@ -172,7 +61,7 @@ int arquivar_tabela(Tabela *tb)
         }
         
         fclose(tb_file);
-        update_tables_config(tb);
+        update_tables_config(tb, 0);
         return 2;
     }
     else
@@ -183,7 +72,7 @@ int arquivar_tabela(Tabela *tb)
     }    
 }
 
-Tabela *carregar_tabela(char *nome_tb)
+Tabela * carregar_tabela(char *nome_tb)
 {
     unsigned int qte_reg = 0, qte_at = 0;
     char *buffer = calloc(MAX_NAME_LENGTH, sizeof(char));
@@ -265,4 +154,14 @@ Tabela *carregar_tabela(char *nome_tb)
     
     return tb;
 }
-#pragma endregion
+
+void remover_arq_tb(Tabela * tb)
+{
+    char tb_file_path[MAX_NAME_LENGTH] = {0};
+    strcpy(tb_file_path, tables_folder_path);
+    strcat(tb_file_path, tb->nome_tb);
+    strcat(tb_file_path, file_extension);
+
+    update_tables_config(tb, 1);
+    remove(tb_file_path);
+}
