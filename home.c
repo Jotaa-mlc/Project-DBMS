@@ -73,7 +73,7 @@ int main()
                 break;
             
             case 6://excluir tabela
-                /* code */
+                remover_tabela();
                 break;
             
             case 7://sair do programa
@@ -86,5 +86,5 @@ int main()
         }
     }
 
-    return 0;
+    exit(0);
 }

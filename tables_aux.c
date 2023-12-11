@@ -85,7 +85,7 @@ int existe_dupla_pk(Tabela *tb)
 {
     for (unsigned int i = 0; i < tb->qte_reg; i++)
     {
-        for (unsigned int j = i+1; j < tb->qte_reg; j++)
+        for (unsigned int j = i+1; j < tb->qte_reg+1; j++)
         {
             if (tb->registros[i].id == tb->registros[j].id) return 1;
         }

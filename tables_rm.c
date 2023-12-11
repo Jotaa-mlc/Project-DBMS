@@ -86,5 +86,6 @@ void remover_tabela()
         Tabela * tb = carregar_tabela(nome_tb);
         remover_arq_tb(tb);
         free_tabela(tb);
+        printf("Tabela removida com sucesso!\n");
     }
 }
