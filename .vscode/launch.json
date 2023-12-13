@@ -5,7 +5,7 @@
             "name": "Debug DBMS",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/dbms",
+            "program": "${workspaceFolder}/dbsm",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

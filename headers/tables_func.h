@@ -5,9 +5,10 @@ int checar_nome(char *nome);
 int existe_id(unsigned int id, Tabela * tb);
 int checar_tipo(char *tipo);
 int existe_dupla_pk(Tabela *tb);
+int nome_repetido(Tabela * tb, char * nome_at);
 char * get_nome_tabela(int deve_existir);
 //Main Funtions
-int criar_tabela();
+void criar_tabela();
 void inserir_registro();
 int remover_registro();
 void remover_tabela();

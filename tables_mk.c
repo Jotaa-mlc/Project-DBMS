@@ -44,7 +44,7 @@ void criar_tabela()
 
     if (pk_ok && tb_ok)
     {
-        printf("Quantos atributos deseja incluir na tabela %s?", nome_tb);
+        printf("Quantos atributos deseja incluir na tabela %s? ", nome_tb);
         scanf("%u", &qte_at);
         tb = alocar_tabela(qte_at, 0);
 
@@ -64,14 +64,23 @@ void criar_tabela()
                 nome_ok = checar_nome(nome_at);
                 if(nome_ok == 2)
                 {
-                    tipo_at_int = checar_tipo(tipo_at);
-                    if (tipo_at_int > 1)
+                    if (!nome_repetido(tb, nome_at))
                     {
-                        tipo_at_int -= 2;//por conta do retorno de checar tipo
-                        at_ok = 1;
+                        tipo_at_int = checar_tipo(tipo_at);
+                        if (tipo_at_int > 1)
+                        {
+                            tipo_at_int -= 2;//por conta do retorno de checar tipo
+                            at_ok = 1;
+                        }
+                        else if (tipo_at_int == 0)//operação cancelada pelo tipo
+                            goto CANCELADO;
                     }
-                    else if (tipo_at_int == 0)//operação cancelada pelo tipo
-                        goto CANCELADO;
+                    else
+                    {
+                        printf("Dois atributos não podem ter o mesmo nome!\n");
+                        nome_ok = try_again();
+                        if (nome_ok == 0) goto CANCELADO;
+                    }
                 }
                 else if (nome_ok == 0)//operação cancelada pelo nome
                     goto CANCELADO;
@@ -144,28 +153,28 @@ void inserir_registro()
         printf("Insira os atributos do registro conforme a formatação:\n");
         //Printa a pk + atributos e tipos
         printf("%s ", tb->nome_pk);
-        for (unsigned int i = 0; i < tb->qte_at; i++) printf("%s (%s) ", tb->nomes_at[i], tipos_list[tb->tipos_at[i]]);
+        for (unsigned int i = 0; i < tb->qte_at; i++) printf("%s(%s) ", tb->nomes_at[i], tipos_list[tb->tipos_at[i]]);
         printf("\n");
         
-        scanf("%u ", &tb->registros[tb->qte_reg].id);
+        scanf("%u", &tb->registros[tb->qte_reg].id);
         for (unsigned int i = 0; i < tb->qte_at; i++)//recebe o atributo baseado no tipo
         {
             switch (tb->tipos_at[i])
             {
                 case 0:
-                    scanf("%d", &tb->registros[tb->qte_reg].at[i].inteiro);
+                    scanf(" %d", &tb->registros[tb->qte_reg].at[i].inteiro);
                     break;
                 case 1:
-                    scanf("%f", &tb->registros[tb->qte_reg].at[i].real);
+                    scanf(" %f", &tb->registros[tb->qte_reg].at[i].real);
                     break;
                 case 2:
-                    scanf("%lf", &tb->registros[tb->qte_reg].at[i].dupla);
+                    scanf(" %lf", &tb->registros[tb->qte_reg].at[i].dupla);
                     break;
                 case 3:
-                    scanf("%c", &tb->registros[tb->qte_reg].at[i].caractere);
+                    scanf(" %c", &tb->registros[tb->qte_reg].at[i].caractere);
                     break;
                 case 4:
-                    scanf("%s", tb->registros[tb->qte_reg].at[i].string);
+                    scanf(" %s", tb->registros[tb->qte_reg].at[i].string);
                     break;
                 default:
                     break;

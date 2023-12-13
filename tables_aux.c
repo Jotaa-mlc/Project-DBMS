@@ -94,6 +94,18 @@ int existe_dupla_pk(Tabela *tb)
     return 0;
 }
 
+int nome_repetido(Tabela * tb, char * nome_at)
+{
+    int repetições = 0;
+
+    for (unsigned int i = 0; i < tb->qte_at; i++)
+    {
+        if (strcmp(nome_at, tb->nomes_at[i]) == 0) repetições++;
+    }
+    
+    return (repetições > 0) ? 1 : 0;
+}
+
 /**
  * Recebe um nome de uma tabela do usuário, realiza os testes necessários considerando
  * se a tabela deve existir ou não (0, 1)
