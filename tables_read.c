@@ -25,7 +25,8 @@ void listar_tabelas()
         qte_tabelas++;
         printf("%i - %s\n", qte_tabelas, buffer);
     }
-    
+
+    fclose(tb_config);
 }
 
 void exibir_tabela()
@@ -86,4 +87,6 @@ void exibir_tabela()
             printf("\n");
         }
     }
+
+    free_tabela(tb);
 }

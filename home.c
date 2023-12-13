@@ -26,11 +26,11 @@ int sair()//confirmação de saido
 
     scanf("\n%c", &resposta);
     resposta = tolower(resposta);
-    if(resposta == 's'){
+    if(resposta == 's')
         return 1;
-    }else{
+    else
         return 0;
-    }
+    
 }
 
 int main()
@@ -84,5 +84,5 @@ int main()
         }
     }
 
-    exit(0);
+    return 0;
 }

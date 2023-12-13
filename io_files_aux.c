@@ -73,7 +73,6 @@ void update_tables_config(Tabela *tb, int excluir_tb)
 
     while (fscanf(tb_config, "%s\n", linha) != EOF)
     {
-        int offset = -1*strlen(linha)-1;
         strcpy(nome_tb_lida, linha);
         strtok(nome_tb_lida, sep);
         if (!(strcmp(tb->nome_tb, nome_tb_lida) == 0)) 
@@ -96,16 +95,18 @@ void update_tables_config(Tabela *tb, int excluir_tb)
 
 int existe_tabela(char *nome_tb)
 {
+    int existe = 0;
     FILE * tb_config;
     tb_config = load_tb_config("r");
         char nome_tb_lida[MAX_NAME_LENGTH] = {0};
         while (fscanf(tb_config, "%s\n", nome_tb_lida) != EOF)
         {
             strtok(nome_tb_lida, sep);
-            if (strcmp(nome_tb, nome_tb_lida) == 0) return 1;
+            existe = (strcmp(nome_tb, nome_tb_lida) == 0) ? 1 : existe;
         }
 
-        return 0;   
+    fclose(tb_config);
+    return existe;   
 }
 
 Tabela * alocar_tabela(unsigned int qte_at, unsigned int qte_reg)

@@ -153,7 +153,7 @@ void inserir_registro()
         printf("Insira os atributos do registro conforme a formatação:\n");
         //Printa a pk + atributos e tipos
         printf("%s ", tb->nome_pk);
-        for (unsigned int i = 0; i < tb->qte_at; i++) printf("%s(%s) ", tb->nomes_at[i], tipos_list[tb->tipos_at[i]]);
+        for (unsigned int i = 0; i < tb->qte_at; i++) printf("%s - (%s) ", tb->nomes_at[i], tipos_list[tb->tipos_at[i]]);
         printf("\n");
         
         scanf("%u", &tb->registros[tb->qte_reg].id);
@@ -206,6 +206,5 @@ void inserir_registro()
         printf("Cancelando Operação...\n");
     }
     
-    free(nome_tb);
     if(tb != NULL) free_tabela(tb);
 }
