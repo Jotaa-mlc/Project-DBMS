@@ -10,22 +10,25 @@ extern char sep[];
 extern char file_extension[];
 extern char * tipos_list[];
 
-int criar_tabela()
+void criar_tabela()
 {
     char *nome_tb;//nome da tabela
     char *nome_pk = calloc(MAX_NAME_LENGTH, sizeof(char));//nome da chave_primária
     char *nome_at = calloc(MAX_NAME_LENGTH, sizeof(char));//nome do atributo
     char *tipo_at = calloc(MAX_NAME_LENGTH, sizeof(char));//tipo do atributo
-    char input_nome_tipo_at[MAX_NAME_LENGTH+10] = {0};//variável auxiliar de entrada do nome + tipo do atributo
-    int op_cancel = 0, tb_ok = 0, at_ok = 0, nome_ok = 0, pk_ok = 0;//var auxiliar de erros
+    unsigned int qte_at = 0;
+    int tipo_at_int = 0;
+    int tb_ok = 0, at_ok = 0, nome_ok = 0, pk_ok = 0;//var auxiliar de erros
 
     while (!tb_ok)
     {
         printf("Por favor, insira o nome da tabela a ser criada: ");
         nome_tb = get_nome_tabela(0);
 
-        if (nome_tb != NULL) tb_ok = 1;
-        else break;
+        if (nome_tb != NULL)
+            tb_ok = 1;
+        else
+            goto CANCELADO;
     }
 
     while(!pk_ok && tb_ok)
@@ -34,42 +37,66 @@ int criar_tabela()
         scanf("\n%s", nome_pk);
         pk_ok = checar_nome(nome_pk);
 
-        if(pk_ok == 0) break;
+        if(pk_ok == 0) goto CANCELADO;
     }
 
-    while (!at_ok && pk_ok && tb_ok)
+    Tabela * tb = NULL;
+
+    if (pk_ok && tb_ok)
     {
-        printf("Qual o nome do atributo que deseja incluir na tabela %s? Informe seguindo a formatação\n'nome_do_atributo tipo_de_dado'\nTipos de dados disponíveis: int, float, double, char e string\n", nome_tb);
-        scanf("\n%s %s", nome_at, tipo_at);
+        printf("Quantos atributos deseja incluir na tabela %s?", nome_tb);
+        scanf("%u", &qte_at);
+        tb = alocar_tabela(qte_at, 0);
 
-        nome_ok = checar_nome(nome_at);
-        if(nome_ok == 2)
-        {
-            nome_ok = checar_tipo(tipo_at);
-            at_ok = (nome_ok > 1) ? 1 : 0;
-        }
-        //não é um elif por conta da alteração de nome_ok caso ocorra um erro na seleção do tipo
-        if (nome_ok == 1)
-            memset(nome_at, 0, MAX_NAME_LENGTH);
+        printf("Informe os atributos seguindo a formatação\n");
+        printf("'nome_do_atributo_1 tipo_de_dado'\n'nome_do_atributo_2 tipo_de_dado...'\nTipos de dados disponíveis: int, float, double, char e string\n");
+
+        for (unsigned int i = 0; i < qte_at; i++)
+        {   
+            at_ok = 0;
+            while (!at_ok)
+            {
+                memset(nome_at, 0, MAX_NAME_LENGTH);
+                memset(tipo_at, 0, MAX_NAME_LENGTH);
+
+                scanf("\n%s %s", nome_at, tipo_at);
+
+                nome_ok = checar_nome(nome_at);
+                if(nome_ok == 2)
+                {
+                    tipo_at_int = checar_tipo(tipo_at);
+                    if (tipo_at_int > 1)
+                    {
+                        tipo_at_int -= 2;//por conta do retorno de checar tipo
+                        at_ok = 1;
+                    }
+                    else if (tipo_at_int == 0)//operação cancelada pelo tipo
+                        goto CANCELADO;
+                }
+                else if (nome_ok == 0)//operação cancelada pelo nome
+                    goto CANCELADO;
+            }
+            if (at_ok)
+            {
+                strcpy(tb->nomes_at[i], nome_at);
+                tb->tipos_at[i] = tipo_at_int;
+            }
+        }   
     }
 
-    Tabela * tb = alocar_tabela(1,0);
     if (at_ok && pk_ok && tb_ok)
     {
         strcpy(tb->nome_tb, nome_tb);
-        strcpy(tb->nomes_at[0], nome_at);
-        tb->tipos_at[0] =  nome_ok - 2;
         strcpy(tb->nome_pk, nome_pk);
         
-        op_cancel = arquivar_tabela(tb);
-        if(op_cancel != 2)
+        if(arquivar_tabela(tb) != 2)
             printf("Cancelando operação...\n");
         else
             printf("Tabela Incluida com sucesso!\n\n");
     }
     else
     {
-        op_cancel = 1;
+        CANCELADO:
         printf("Cancelando operação...\n");
     }
     
@@ -77,9 +104,7 @@ int criar_tabela()
     free(nome_pk);
     free(nome_at);
     free(tipo_at);
-    free_tabela(tb);
-
-    return op_cancel != 0 ? -1 : 2;
+    if (tb != NULL) free_tabela(tb);
 }
 
 void inserir_registro()

@@ -1,7 +1,7 @@
 PARAMS = -g -W -pedantic
 
 all: home tb_mk tb_rm tb_read tb_aux io io_aux
-	gcc Obj_files/*.o -o dbms $(PARAMS)
+	gcc Obj_files/*.o -o dbsm $(PARAMS)
 home: home.c
 	gcc -o Obj_files/home.o home.c -c $(PARAMS)
 tb_mk: tables_mk.c

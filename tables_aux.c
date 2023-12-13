@@ -77,7 +77,7 @@ int checar_tipo(char *tipo)
         if(strcmp(tipo, tipos_list[tipo_int]) == 0) return tipo_int+2;
     }
 
-    printf("Tipo de variável não reconhecido.\n");
+    printf("Tipo de variável não reconhecido!\n");
     return try_again();
 }
 
