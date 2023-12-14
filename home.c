@@ -63,7 +63,7 @@ int main()
                 break;
             
             case 4://pesquisar
-                /* code */
+                pesquisar_tabela();
                 break;
             
             case 5://excluir registro

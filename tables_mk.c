@@ -22,7 +22,7 @@ void criar_tabela()
 
     while (!tb_ok)
     {
-        printf("Por favor, insira o nome da tabela a ser criada: ");
+        printf("Por favor, insira o nome da tabela a ser criada:\n");
         nome_tb = get_nome_tabela(0);
 
         if (nome_tb != NULL)

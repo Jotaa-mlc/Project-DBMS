@@ -160,3 +160,39 @@ char * get_nome_tabela(int deve_existir)
     printf("Cancelando a operação...\n");
     return NULL;
 }
+
+int get_opcao_pesquisa()
+{
+    int comparacao;
+    char * list_pesq[6] = {">", ">=", "=", "<", "<=", "+/- (disponível apenas para strings)"};
+
+    printf("Selecione uma das opções de pesquisa:\n");
+    for (int i = 0; i < 6; i++)
+        printf("%i - %s\n", i, list_pesq[i]);
+
+    scanf("%i", &comparacao);
+
+    return comparacao;
+}
+
+double convert_at_double(int tipo_at, Atributo atri)
+{
+    double convertido;
+    switch (tipo_at)
+    {
+        case 0://int
+            convertido = (double)atri.inteiro;
+            break;
+        case 1://float
+            convertido = (double)atri.real;
+            break;
+        case 2://double
+            convertido = (double)atri.dupla;
+            break;
+        case 3://char
+            convertido = (double)atri.caractere;
+            break;
+    }
+    
+    return convertido;
+}
