@@ -19,7 +19,7 @@ void print_main_menu()//exibe o menu principal do programa
     printf("\\----------------------------------------/\n");
 }
 
-int sair()//confirmação de saido
+int sair()//confirmação de saida
 {
     char resposta = ' ';
     printf("Certeza que deseja deixar o programa?\nDigite 's' para confirmar\n");
@@ -82,7 +82,7 @@ int main()
                 printf("Comando inválido!\nFavor insira um comando descrito no menu.\n");
                 break;
         }
+        printf("\n\n");
     }
-
     return 0;
 }

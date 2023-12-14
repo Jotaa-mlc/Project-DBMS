@@ -59,35 +59,8 @@ void exibir_tabela()
         printf("\n");
 
         for (unsigned int i = 0; i < tb->qte_reg; i++)
-        {
-            printf("%u | ", tb->registros[i].id);
-            for (unsigned int j = 0; j < tb->qte_at; j++)
-            {
-                switch (tb->tipos_at[j])
-                {
-                    case 0:
-                        printf("%d | ", tb->registros[i].at[j].inteiro);
-                        break;
-                    case 1:
-                        printf("%f | ", tb->registros[i].at[j].real);
-                        break;
-                    case 2:
-                        printf("%lf | ", tb->registros[i].at[j].dupla);
-                        break;
-                    case 3:
-                        printf("%c | ", tb->registros[i].at[j].caractere);
-                        break;
-                    case 4:
-                        printf("%s | ", tb->registros[i].at[j].string);
-                        break;
-                    default:
-                        break;
-                }
-            }
-            printf("\n");
-        }
+            print_registro(tb->registros[i], tb->qte_at, tb->tipos_at);
     }
-
     free_tabela(tb);
 }
 
@@ -238,31 +211,7 @@ void pesquisar_tabela()
             }
             
             if(valido)
-            {
-                printf("%u | ", tb->registros[i].id);
-                for (unsigned int j = 0; j < tb->qte_at; j++)
-                {
-                    switch (tb->tipos_at[j])
-                    {
-                        case 0:
-                            printf("%d | ", tb->registros[i].at[j].inteiro);
-                            break;
-                        case 1:
-                            printf("%f | ", tb->registros[i].at[j].real);
-                            break;
-                        case 2:
-                            printf("%lf | ", tb->registros[i].at[j].dupla);
-                            break;
-                        case 3:
-                            printf("%c | ", tb->registros[i].at[j].caractere);
-                            break;
-                        case 4:
-                            printf("%s | ", tb->registros[i].at[j].string);
-                            break;
-                    }
-                }
-                printf("\n");
-            }
+                print_registro(tb->registros[i], tb->qte_at, tb->tipos_at);
         }
     }
     if (tb != NULL) free_tabela(tb);

@@ -6,7 +6,7 @@
 #include "headers/tables_func.h"
 #include "headers/io_files.h"
 
-int remover_registro()
+void remover_registro()
 {
     char * nome_tb;
     unsigned int id_remove;
@@ -63,7 +63,6 @@ int remover_registro()
     }
 
     free_tabela(tb);
-    return id_ok == 2 ? 2 : 0;
 }
 
 void remover_tabela()
