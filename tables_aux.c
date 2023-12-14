@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "headers/definitions.h"
+#include "headers/tables_func.h"
 #include "headers/io_files.h"
 
 extern char sep[];

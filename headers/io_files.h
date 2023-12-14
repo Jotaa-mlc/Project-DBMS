@@ -45,6 +45,7 @@ void free_tabela(Tabela *tb);
 /**
  * Cria/Atualiza o arquivo de uma Tabela
  * @param tb Tabela a ser arquivada;
+ * @return 2: sucesso; -1: Falha;
 */
 int arquivar_tabela(Tabela *tb);
 /**
