@@ -38,3 +38,5 @@ Contribuições:
         Menu Inicial;
         Criar Tabela;
         Inserir Registro;
+    Emilly Vitória:
+        Pesquisar valor em uma tabela;
