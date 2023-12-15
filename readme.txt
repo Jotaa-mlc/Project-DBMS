@@ -34,7 +34,13 @@ Autores:
     JOÃO ARTUR MEIRA LUIZ DA COSTA
 
 Contribuições:
+    Emilly Vitoria:
     João Artur:
         Menu Inicial;
         Criar Tabela;
         Inserir Registro;
+        Remover Registro;
+        Remover Tabela;
+        Listar Tabelas;
+        Exibir Tabela;
+        Pesquisar Valor;

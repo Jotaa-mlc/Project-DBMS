@@ -11,11 +11,6 @@ char file_extension[] = ".itp";
 char tables_folder_path[] = "tables/";
 char tables_config[] = "tables/tables.config";
 
-/**
- * Cria/sobreescreve o arquivo da tabela indicada
- * 
- * @return 2: sucesso; -1: erro ao abrir o arquivo;
-*/
 int arquivar_tabela(Tabela *tb)
 {
     FILE * tb_file;
@@ -24,18 +19,19 @@ int arquivar_tabela(Tabela *tb)
     if (tb_file != NULL)
     {
         fprintf(tb_file,"%s%s", tb->nome_pk, sep);
-
-        for (unsigned int i = 0; i < tb->qte_at; i++)//insere os atributos no cabeçalho do arquivo
-        {
+        //insere os atributos no cabeçalho do arquivo
+        for (unsigned int i = 0; i < tb->qte_at; i++)
             fprintf(tb_file,"%s%s%i%s", tb->nomes_at[i], sep, tb->tipos_at[i], sep);
-        }
+
         fprintf(tb_file,"\n");
         
-        for (unsigned int i = 0; i < tb->qte_reg; i++)//insere os registros
+        //insere os registros
+        for (unsigned int i = 0; i < tb->qte_reg; i++)
         {
             fprintf(tb_file,"%u%s", tb->registros[i].id, sep);
             for (unsigned int j = 0; j < tb->qte_at; j++)
             {
+                //escreve no arquivo conforme o tipo do atributo
                 switch (tb->tipos_at[j])
                 {
                     case 0:
@@ -92,8 +88,6 @@ Tabela * carregar_tabela(char *nome_tb)
         }
         memset(buffer, 0, MAX_NAME_LENGTH);
     }
-
-    memset(buffer, 0, MAX_NAME_LENGTH);
     
     Tabela *tb = alocar_tabela(qte_at, qte_reg);
     
@@ -102,9 +96,12 @@ Tabela * carregar_tabela(char *nome_tb)
     FILE * tb_file =  load_tb_file(nome_tb, "r");
     //Lê os nomes dos atributos e seus tipos
     fscanf(tb_file, "%s\n", buffer);
+    //Lê o nome da Chave_Primária
     char * slice = strtok(buffer, sep);
     strcpy(tb->nome_pk, slice);
     slice = strtok(NULL, sep);
+
+    //Lê do arquivo o nome de cada atributo e seu tipo
     for (unsigned int i = 0; i < qte_at; i++)
     {   
         strcpy(tb->nomes_at[i], slice);
@@ -117,7 +114,8 @@ Tabela * carregar_tabela(char *nome_tb)
     
     //Lê os registros com base nos tipos de atributos
     for (unsigned int i = 0; i < qte_reg; i++)
-    {
+    {   
+        //Lê a Chave_Primária do registro
         fscanf(tb_file, "%s\n", buffer);
         slice = strtok(buffer, sep);
         sscanf(slice, "%u", &tb->registros[i].id);
@@ -158,6 +156,7 @@ Tabela * carregar_tabela(char *nome_tb)
 
 void remover_arq_tb(Tabela * tb)
 {
+    //Formata o caminho do arquivo baseado no nome da tabela
     char tb_file_path[MAX_NAME_LENGTH] = {0};
     strcpy(tb_file_path, tables_folder_path);
     strcat(tb_file_path, tb->nome_tb);

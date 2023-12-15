@@ -16,8 +16,8 @@ void criar_tabela()
     char *nome_pk = calloc(MAX_NAME_LENGTH, sizeof(char));//nome da chave_primária
     char *nome_at = calloc(MAX_NAME_LENGTH, sizeof(char));//nome do atributo
     char *tipo_at = calloc(MAX_NAME_LENGTH, sizeof(char));//tipo do atributo
-    unsigned int qte_at = 0;
-    int tipo_at_int = 0;
+    unsigned int qte_at = 0;//Quantidade de atributos
+    int tipo_at_int = 0;//tipo do atributo em inteiro
     int tb_ok = 0, at_ok = 0, nome_ok = 0, pk_ok = 0;//var auxiliar de erros
     Tabela * tb = NULL;
 
@@ -48,7 +48,7 @@ void criar_tabela()
         tb = alocar_tabela(qte_at, 0);
 
         printf("Informe os atributos seguindo a formatação\n");
-        printf("'nome_do_atributo_1 tipo_de_dado'\n'nome_do_atributo_2 tipo_de_dado...'\nTipos de dados disponíveis: int, float, double, char e string\n");
+        printf("'nome_do_atributo_1 tipo_de_dado'\n'nome_do_atributo_2 tipo_de_dado'...\nTipos de dados disponíveis: int, float, double, char e string\n");
 
         for (unsigned int i = 0; i < qte_at; i++)
         {   
@@ -71,7 +71,7 @@ void criar_tabela()
                             tipo_at_int -= 2;//por conta do retorno de checar tipo
                             at_ok = 1;
                         }
-                        else if (tipo_at_int == 0)//operação cancelada pelo tipo
+                        else if (tipo_at_int == 0)//operação cancelada em tipo
                             goto CANCELADO;
                     }
                     else
@@ -81,7 +81,7 @@ void criar_tabela()
                         if (nome_ok == 0) goto CANCELADO;
                     }
                 }
-                else if (nome_ok == 0)//operação cancelada pelo nome
+                else if (nome_ok == 0)//operação cancelada em nome
                     goto CANCELADO;
             }
             if (at_ok)
@@ -117,8 +117,8 @@ void criar_tabela()
 
 void inserir_registro()
 {
-    int insert_ok = 0, reg_ok = 0, tb_ok = 0;
     char *nome_tb;//nome da tabela
+    int insert_ok = 0, reg_ok = 0, tb_ok = 0;//var auxiliares de erro
     Tabela * tb = NULL;
     Registro * reg = NULL;
 

@@ -35,7 +35,7 @@ int nome_repetido(Tabela * tb, char * nome_at);
 /**
  * Recebe um nome de uma tabela do usuário, realiza os testes necessários considerando
  * se a tabela deve existir ou não (0, 1)
- * @return NULL se o user cancelar a operação;
+ * @return String: informada pelo usuário; NULL: usuário cancelou a operação;
 */
 char * get_nome_tabela(int deve_existir);
 /**
