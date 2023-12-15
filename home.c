@@ -19,18 +19,18 @@ void print_main_menu()//exibe o menu principal do programa
     printf("\\----------------------------------------/\n");
 }
 
-int sair()//confirmação de saido
+int sair()//confirmação de saida
 {
     char resposta = ' ';
     printf("Certeza que deseja deixar o programa?\nDigite 's' para confirmar\n");
 
     scanf("\n%c", &resposta);
     resposta = tolower(resposta);
-    if(resposta == 's'){
+    if(resposta == 's')
         return 1;
-    }else{
+    else
         return 0;
-    }
+    
 }
 
 int main()
@@ -63,7 +63,7 @@ int main()
                 break;
             
             case 4://pesquisar
-                /* code */
+                pesquisar_tabela();
                 break;
             
             case 5://excluir registro
@@ -82,7 +82,7 @@ int main()
                 printf("Comando inválido!\nFavor insira um comando descrito no menu.\n");
                 break;
         }
+        printf("\n\n");
     }
-
-    exit(0);
+    return 0;
 }

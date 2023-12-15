@@ -148,9 +148,10 @@ Tabela * carregar_tabela(char *nome_tb)
         }
     }
 
-    free(tb_config);
-    free(tb_file);
+    free(nome_tb);
     free(buffer);
+    fclose(tb_config);
+    fclose(tb_file);
     
     return tb;
 }

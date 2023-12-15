@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "headers/definitions.h"
+#include "headers/tables_func.h"
 #include "headers/io_files.h"
 
 extern char sep[];
@@ -29,12 +30,7 @@ int try_again()
 
     return resposta;
 }
-/**
- * Confere se o nome está válido, i.e.
- * Não contém o [sep]
- * 
- * @return 2: sucesso; 1: repetir processo; 0: cancelar operação;
-*/
+
 int checar_nome(char *nome)
 {
     int nome_size = strlen(nome);
@@ -65,11 +61,6 @@ int existe_id(unsigned int id, Tabela * tb)
     return 0;
 }
 
-/**
- * confere a entrada do tipo do atributo
- * 
- * @return 0 || 1: try_again(); 2: int, 3: float, 4: double, 5: char, 6: string
-*/
 int checar_tipo(char *tipo)
 {
     for(int tipo_int = 0; tipo_int < 5; tipo_int++)
@@ -77,7 +68,7 @@ int checar_tipo(char *tipo)
         if(strcmp(tipo, tipos_list[tipo_int]) == 0) return tipo_int+2;
     }
 
-    printf("Tipo de variável não reconhecido.\n");
+    printf("Tipo de variável não reconhecido!\n");
     return try_again();
 }
 
@@ -94,11 +85,18 @@ int existe_dupla_pk(Tabela *tb)
     return 0;
 }
 
-/**
- * Recebe um nome de uma tabela do usuário, realiza os testes necessários considerando
- * se a tabela deve existir ou não (0, 1)
- * @return NULL se o user cancelar a operação;
-*/
+int nome_repetido(Tabela * tb, char * nome_at)
+{
+    int repetições = 0;
+
+    for (unsigned int i = 0; i < tb->qte_at; i++)
+    {
+        if (strcmp(nome_at, tb->nomes_at[i]) == 0) repetições++;
+    }
+    
+    return (repetições > 0) ? 1 : 0;
+}
+
 char * get_nome_tabela(int deve_existir)
 {
     char * nome_tb = calloc(MAX_NAME_LENGTH, sizeof(char));
@@ -147,4 +145,100 @@ char * get_nome_tabela(int deve_existir)
     free(nome_tb);
     printf("Cancelando a operação...\n");
     return NULL;
+}
+
+Registro * get_registro(unsigned int qte_at, int * tipos_at)
+{
+    Registro * reg = calloc(1, sizeof(Registro));
+    reg->at = calloc(qte_at, sizeof(Atributo));
+
+    scanf("%u", &reg->id);
+    for (unsigned int i = 0; i < qte_at; i++)//recebe o atributo baseado no tipo
+    {
+        switch (tipos_at[i])
+        {
+            case 0:
+                scanf(" %d", &reg->at[i].inteiro);
+                break;
+            case 1:
+                scanf(" %f", &reg->at[i].real);
+                break;
+            case 2:
+                scanf(" %lf", &reg->at[i].dupla);
+                break;
+            case 3:
+                scanf(" %c", &reg->at[i].caractere);
+                break;
+            case 4:
+                scanf(" %s", reg->at[i].string);
+                break;
+            default:
+                break;
+        }
+    }
+
+    return reg;
+}
+
+int get_opcao_pesquisa()
+{
+    int comparacao;
+    char * list_pesq[6] = {">", ">=", "=", "<", "<=", "+/- (disponível apenas para strings)"};
+
+    printf("Selecione uma das opções de pesquisa:\n");
+    for (int i = 0; i < 6; i++)
+        printf("%i - %s\n", i, list_pesq[i]);
+
+    scanf("%i", &comparacao);
+
+    return comparacao;
+}
+
+double convert_at_double(int tipo_at, Atributo atri)
+{
+    double convertido;
+    switch (tipo_at)
+    {
+        case 0://int
+            convertido = (double)atri.inteiro;
+            break;
+        case 1://float
+            convertido = (double)atri.real;
+            break;
+        case 2://double
+            convertido = (double)atri.dupla;
+            break;
+        case 3://char
+            convertido = (double)atri.caractere;
+            break;
+    }
+    
+    return convertido;
+}
+
+void print_registro(Registro reg, unsigned int qte_at, int * tipos_at)
+{
+    printf("%u | ", reg.id);
+            for (unsigned int j = 0; j < qte_at; j++)
+            {
+                switch (tipos_at[j])
+                {
+                    case 0:
+                        printf("%d | ", reg.at[j].inteiro);
+                        break;
+                    case 1:
+                        printf("%f | ", reg.at[j].real);
+                        break;
+                    case 2:
+                        printf("%lf | ", reg.at[j].dupla);
+                        break;
+                    case 3:
+                        printf("%c | ", reg.at[j].caractere);
+                        break;
+                    case 4:
+                        printf("%s | ", reg.at[j].string);
+                        break;
+                }
+            }
+            printf("\n");
 }

@@ -6,7 +6,7 @@
 #include "headers/tables_func.h"
 #include "headers/io_files.h"
 
-int remover_registro()
+void remover_registro()
 {
     char * nome_tb;
     unsigned int id_remove;
@@ -45,10 +45,13 @@ int remover_registro()
         {
             if (tb->registros[i].id == id_remove)
             {
-                for (unsigned int j = i; j < tb->qte_reg; j++)
+                free(tb->registros[i].at);
+
+                for (unsigned int j = i; j < tb->qte_reg-1; j++)
                 {
                     tb->registros[j] = tb->registros[j+1];
                 }
+
                 tb->qte_reg--;
             }
         }
@@ -59,9 +62,7 @@ int remover_registro()
             printf("ERRO: não foi possível atualizar a planilha.\n");
     }
 
-    free(nome_tb);
     free_tabela(tb);
-    return id_ok == 2 ? 2 : 0;
 }
 
 void remover_tabela()
@@ -81,11 +82,14 @@ void remover_tabela()
             break;
     }
 
+    Tabela * tb = NULL;
+
     if (tb_ok)
     {
-        Tabela * tb = carregar_tabela(nome_tb);
+        tb = carregar_tabela(nome_tb);
         remover_arq_tb(tb);
-        free_tabela(tb);
         printf("Tabela removida com sucesso!\n");
     }
+
+    if (tb != NULL) free_tabela(tb);
 }

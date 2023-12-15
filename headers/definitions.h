@@ -1,6 +1,7 @@
 #ifndef MAX_NAME_LENGTH
 #define MAX_NAME_LENGTH 250 //tamanho máximo para nomes de tabelas, atributos, etc
-typedef union properties
+
+typedef union
 {
     int inteiro;
     float real;
@@ -9,19 +10,20 @@ typedef union properties
     char string[MAX_NAME_LENGTH];
 } Atributo;
 
-typedef struct reg
+typedef struct
 {
-    unsigned int id;
-    Atributo *at;
+    unsigned int id;//CHAVE_PRIMARIA
+    Atributo *at;//Lista de atributos
 } Registro;
 
-typedef struct table
+typedef struct
 {
-    char *nome_tb;
-    char *nome_pk;
-    char **nomes_at;
-    int *tipos_at;//int, float, double, char, string
-    unsigned int qte_at, qte_reg;
-    Registro *registros;
+    char *nome_tb;//Nome da tabela
+    char *nome_pk;//Nome da CHAVE_PRIMARIA
+    char **nomes_at;//Lista dos nomes dos Atributos
+    int *tipos_at;//Lista auxiliar com o tipo de cada atributo
+    unsigned int qte_at;//Quantidade de atributos
+    unsigned int qte_reg;//Quantidade de registros
+    Registro *registros;//Lista de registros
 } Tabela;
 #endif
