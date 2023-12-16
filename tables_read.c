@@ -69,9 +69,9 @@ void pesquisar_tabela()
     char * nome_tb;
     int comparacao = 0;
     unsigned int index_at = 0;
+    int tb_ok = 0, at_ok = 0, cmp_ok = 0;
     Tabela * tb = NULL;
     Atributo item_pesquisa;
-    int tb_ok = 0, at_ok = 0, cmp_ok = 0;
 
     while (!tb_ok)
     {
@@ -205,7 +205,7 @@ void pesquisar_tabela()
                         valido = (result_strcmp < 0 || result_strcmp == 0) ? 1 : 0;
                         break;
                     case 5://+/-
-                        valido = (result_strcmp == 0) ? 1 : 0;
+                        valido = (strstr(tb->registros[i].at[index_at].string, item_pesquisa.string) != NULL) ? 1 : 0;
                         break;
                 }
             }

@@ -10,12 +10,9 @@ extern char file_extension[];
 extern char tables_folder_path[];
 extern char tables_config[];
 
-/**
- * Recebe o nome da tabela e o modo de abertura;
- * @return ptr para o arquivo OU NULL em caso de erro;
-*/
 FILE * load_tb_file(char *nome_tb, char *open_mode)
 {
+    //Formata o caminho do arquivo baseado no nome da tabela
     char table_path[MAX_NAME_LENGTH] = {0};
     strcpy(table_path, tables_folder_path);
     strcat(table_path, nome_tb);
@@ -35,10 +32,6 @@ FILE * load_tb_file(char *nome_tb, char *open_mode)
     }
 }
 
-/**
- * Carrega o arquivo tables.config
- * @return ptr para o arquivo OU NULL em caso de erro
-*/
 FILE * load_tb_config(char *open_mode)
 {
     FILE * tb_config;
@@ -55,18 +48,15 @@ FILE * load_tb_config(char *open_mode)
     }
 }
 
-/**
- * Atualiza o arquivo tables.config baseado na tabela passada
- * @param excluir_tb (0 || 1)
-*/
 void update_tables_config(Tabela *tb, int excluir_tb)
 {
+    //Cria um novo arquivo temporário para tables.config
     char path_new_tb_config[MAX_NAME_LENGTH];
     strcpy(path_new_tb_config, tables_folder_path);
     strcat(path_new_tb_config, "tables.config.temp");
+    FILE * new_tb_config = fopen(path_new_tb_config, "w");
 
     FILE * tb_config = load_tb_config("r");
-    FILE * new_tb_config = fopen(path_new_tb_config, "w");
 
     char nome_tb_lida[MAX_NAME_LENGTH] = {0};
     char linha[MAX_NAME_LENGTH] = {0};

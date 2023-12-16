@@ -48,9 +48,7 @@ void remover_registro()
                 free(tb->registros[i].at);
 
                 for (unsigned int j = i; j < tb->qte_reg-1; j++)
-                {
                     tb->registros[j] = tb->registros[j+1];
-                }
 
                 tb->qte_reg--;
             }
@@ -70,6 +68,7 @@ void remover_tabela()
     char * nome_tb;
     unsigned int id_remove;
     int tb_ok = 0, id_ok = 0;
+    Tabela * tb = NULL;
 
     while (!tb_ok)
     {
@@ -81,8 +80,6 @@ void remover_tabela()
         else
             break;
     }
-
-    Tabela * tb = NULL;
 
     if (tb_ok)
     {

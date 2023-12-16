@@ -34,9 +34,18 @@ Autores:
     JOÃO ARTUR MEIRA LUIZ DA COSTA
 
 Contribuições:
+    Emilly Vitoria:
     João Artur:
         Menu Inicial;
         Criar Tabela;
         Inserir Registro;
+<<<<<<< HEAD
     Emilly Vitória:
         Pesquisar valor em uma tabela;
+=======
+        Remover Registro;
+        Remover Tabela;
+        Listar Tabelas;
+        Exibir Tabela;
+        Pesquisar Valor;
+>>>>>>> d6f78becfd9c8f2a36a570d2fdce33391c07a6b0
