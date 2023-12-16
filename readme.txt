@@ -19,7 +19,8 @@ O QUE FARIAMOS DE FORMA DIFERENTE:
         qual será o padrão de retorno das funções (quando possível) Ex.: 0: sucesso, 1: operação cancelada, -1: erro durante a operação, etc.
     	
    Modularizar melhor o código de forma que ele ficasse mais facilmente legível, tanto em funções quanto em arquivos se necessário.
-   
+   Em questão à organização poderíamos ter separado melhor em relação aos diretórios, deixado só um arquivo principal fora do diretório, como se fosse o 'main' e os restantes das ações fora do diretório em um src, por ex
+
    Por fim, gostaríamos de ter dado um melhor acabamento ao código para que tais mudanças pudessem ser feitas.
    
    
@@ -30,22 +31,20 @@ COMO COMPILAR O PROJETO:
 	    gcc home.c io_files.c io_files_aux.c tables_aux.c tables_mk.c tables_read.c tables_rm.c -o $NOME_DO_EXECUTAVEL$
 
 Autores:
-    EMILLY VITORIA RODRIGUES GOMES FELIX
+    EMILLY VITORIA RODRIGUES GOMES FÉLIX
     JOÃO ARTUR MEIRA LUIZ DA COSTA
 
 Contribuições:
-    Emilly Vitoria:
     João Artur:
         Menu Inicial;
         Criar Tabela;
         Inserir Registro;
-<<<<<<< HEAD
-    Emilly Vitória:
-        Pesquisar valor em uma tabela;
-=======
         Remover Registro;
         Remover Tabela;
         Listar Tabelas;
         Exibir Tabela;
         Pesquisar Valor;
->>>>>>> d6f78becfd9c8f2a36a570d2fdce33391c07a6b0
+
+    Emilly Vitória:
+        Exibir dados da tabela e realizar a pesquisa (search.c) 
+            devido o codigo de João arthur ser mais integrado com as outras funções foi acordado que seria usado o dele 

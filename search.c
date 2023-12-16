@@ -60,42 +60,42 @@ void printAndStoreColumnData(FILE *file, int columnNumber, int numColumns, Colum
 // Função para pesquisar valores na coluna
 void searchColumnValues(ColumnData *columnData, int option, char *value) {
     switch (option) {
-        case 1: // Valores maiores que o valor informado
+        case 1: 
             for (int i = 0; i < columnData->numRows; i++) {
                 if (atoi(columnData->data[i]) > atoi(value)) {
                     printf("%s\n", columnData->data[i]);
                 }
             }
             break;
-        case 2: // Valores maiores ou iguais ao valor informado
+        case 2: 
             for (int i = 0; i < columnData->numRows; i++) {
                 if (strcmp(columnData->data[i], value) >= 0) {
                     printf("%s\n", columnData->data[i]);
                 }
             }
             break;
-        case 3: // Valores iguais ao valor informado
+        case 3: 
             for (int i = 0; i < columnData->numRows; i++) {
                 if (atoi(columnData->data[i]) == atoi(value)) {
                     printf("%s\n", columnData->data[i]);
                 }
             }
             break;
-        case 4: // Valores menores que o valor informado
+        case 4: 
             for (int i = 0; i < columnData->numRows; i++) {
                 if (strcmp(columnData->data[i], value) < 0) {
                     printf("%s\n", columnData->data[i]);
                 }
             }
             break;
-        case 5: // Valores menores ou iguais ao valor informado
+        case 5: 
             for (int i = 0; i < columnData->numRows; i++) {
                 if (atoi(columnData->data[i]) <= atoi(value)) {
                     printf("%s\n", columnData->data[i]);
                 }
             }
             break;
-        case 6: // Valores próximos ao valor informado (apenas para colunas do tipo string)
+        case 6:  
             if (isStringColumn(columnData->data[0])) {
                 for (int i = 0; i < columnData->numRows; i++) {
                     if (strstr(columnData->data[i], value) != NULL) {
@@ -115,10 +115,10 @@ void searchColumnValues(ColumnData *columnData, int option, char *value) {
 bool isStringColumn(char *data) {
     for (int i = 0; data[i] != '\0'; i++) {
         if (!(data[i] >= '0' && data[i] <= '9') && data[i] != ' ') {
-            return true; // Retorna true se encontrar algum caractere que não seja um número ou espaço
+            return true;
         }
     }
-    return false; // Retorna false se todos os caracteres são números ou espaços
+    return false; 
 }
 
 // Função para listar os arquivos CSV no diretório "../data_base"
@@ -165,18 +165,15 @@ int main() {
     // Lê as colunas do arquivo CSV e imprime os dados
     readColumns(file, columns, &numColumns);
 
-    // Exibe as colunas
     printf("Colunas disponíveis:\n");
     for (int i = 0; i < numColumns; i++) {
         printf("%d. %s\n", i + 1, columns[i]);
     }
 
-    // Solicita a seleção da coluna
     int selectedColumn;
     printf("Selecione o número da coluna para exibir os dados: ");
     scanf("%d", &selectedColumn);
 
-    // Verifica se a seleção é válida
     if (selectedColumn < 1 || selectedColumn > numColumns) {
         fprintf(stderr, "Seleção inválida.\n");
         fclose(file);
@@ -186,7 +183,6 @@ int main() {
     // Reposiciona o cursor do arquivo para o início dos dados
     fseek(file, 0, SEEK_SET);
 
-    // Pula a linha de cabeçalho
     fgets(columns[0], sizeof(columns[0]), file);
 
     // Exibe os dados da coluna escolhida
@@ -196,7 +192,6 @@ int main() {
     ColumnData columnData;
     columnData.numRows = 0;
 
-    // Lê e armazena os dados da coluna escolhida
     printAndStoreColumnData(file, selectedColumn, numColumns, &columnData);
 
     // Exibe as opções de pesquisa
@@ -208,17 +203,14 @@ int main() {
     printf("5. Valores menores ou iguais ao valor informado\n");
     printf("6. Valores próximos ao valor informado (apenas para colunas do tipo string)\n");
 
-    // Solicita a opção de pesquisa
     int searchOption;
     printf("Selecione a opção de pesquisa: ");
     scanf("%d", &searchOption);
 
-    // Solicita o valor para pesquisa
     char searchValue[MAX_COLUMN_NAME_LENGTH];
     printf("Digite o valor para pesquisa: ");
     scanf("%s", searchValue);
 
-    // Realiza a pesquisa na coluna
     searchColumnValues(&columnData, searchOption, searchValue);
 
     fclose(file);
