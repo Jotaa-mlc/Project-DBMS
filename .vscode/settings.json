@@ -4,6 +4,7 @@
         "string.h": "c",
         "stdlib.h": "c",
         "io_files.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "tables_func.h": "c"
     }
 }

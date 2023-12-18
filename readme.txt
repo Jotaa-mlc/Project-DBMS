@@ -41,10 +41,8 @@ Contribuições:
         Inserir Registro;
         Remover Registro;
         Remover Tabela;
+
+    Emilly Vitória: 
         Listar Tabelas;
         Exibir Tabela;
         Pesquisar Valor;
-
-    Emilly Vitória:
-        Exibir dados da tabela e realizar a pesquisa (search.c) 
-            devido o codigo de João arthur ser mais integrado com as outras funções foi acordado que seria usado o dele 
